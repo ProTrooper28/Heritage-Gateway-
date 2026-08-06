@@ -99,7 +99,8 @@ function Experience() {
 }
 
 function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y: number } }) {
-  const slide = slides[step];
+  const slide = slides[step] ?? slides[0]!;
+
   const alignClass =
     slide.align === "center"
       ? "items-center text-center"
