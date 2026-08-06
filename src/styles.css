@@ -132,13 +132,158 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@theme inline {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Jost", system-ui, sans-serif;
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-parchment: var(--parchment);
+  --color-parchment-dim: var(--parchment-dim);
+  --color-ink: var(--ink);
+}
+
+:root {
+  --gold: oklch(0.79 0.11 82);
+  --gold-soft: oklch(0.68 0.08 78);
+  --parchment: oklch(0.96 0.012 85);
+  --parchment-dim: oklch(0.78 0.015 85 / 0.72);
+  --ink: oklch(0.13 0.008 60);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--ink);
+    color: var(--parchment);
+    font-family: var(--font-sans);
   }
 }
+
+@utility glass-card {
+  background: linear-gradient(
+    150deg,
+    color-mix(in oklab, var(--parchment) 12%, transparent),
+    color-mix(in oklab, var(--ink) 55%, transparent)
+  );
+  backdrop-filter: blur(22px) saturate(130%);
+  border: 1px solid color-mix(in oklab, var(--gold) 22%, transparent);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 24px 70px -30px oklch(0 0 0 / 0.9),
+    inset 0 1px 0 color-mix(in oklab, var(--parchment) 14%, transparent);
+}
+
+@utility ken-burns {
+  animation: kenburns 26s ease-out forwards;
+}
+
+@utility float-a {
+  animation: floaty 9s ease-in-out infinite;
+}
+
+@utility float-b {
+  animation: floaty 11s ease-in-out infinite reverse;
+}
+
+@utility reveal {
+  animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@utility ray {
+  position: absolute;
+  top: -30%;
+  width: 26vw;
+  height: 170%;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--gold) 16%, transparent),
+    transparent 70%
+  );
+  filter: blur(38px);
+  transform-origin: top center;
+  animation: rays 14s ease-in-out infinite;
+}
+
+@utility ray-1 {
+  left: 8%;
+  transform: rotate(14deg);
+}
+
+@utility ray-2 {
+  left: 42%;
+  transform: rotate(-8deg);
+  animation-delay: -5s;
+}
+
+@utility ray-3 {
+  right: 6%;
+  transform: rotate(9deg);
+  animation-delay: -9s;
+}
+
+@utility dust {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--gold);
+  animation-name: drift;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.16) translate3d(-1.2%, -1.6%, 0);
+  }
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes rays {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(24px, -60px, 0);
+  }
+  100% {
+    transform: translate3d(-10px, -130px, 0);
+  }
+}
+
