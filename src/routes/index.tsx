@@ -139,11 +139,11 @@ function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y
           {slide.index} — {slide.theme}
         </p>
 
-        <h1 className="mt-6 font-serif font-light leading-[0.86] tracking-[-0.02em] text-parchment">
+        <h1 className="mt-8 font-serif font-light leading-[1] tracking-[-0.02em] text-parchment">
           {slide.title.map((line, i) => (
             <span key={line} className="block overflow-hidden">
               <span
-                className="reveal block text-[clamp(3.5rem,8.4vw,9rem)]"
+                className="reveal block pb-[0.06em] text-[clamp(3.5rem,8vw,8.5rem)]"
                 style={{ animationDelay: `${350 + i * 180}ms` }}
               >
                 {line}
