@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
 import { InfoCard } from "@/components/heritage/InfoCard";
 import { slides } from "@/components/heritage/slides";
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { session } from "@/lib/session";
 import blend from "@/assets/heritage-blend.jpg";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")(
+  {
   head: () => ({
     meta: [
       { title: "Indian Heritage AI — Experience History Like Never Before" },
@@ -27,6 +31,16 @@ export const Route = createFileRoute("/")({
   component: Experience,
 });
 
+// ─── App state machine ────────────────────────────────────────────────────────
+//
+//  "slides"    → pre-login cinematic slideshow
+//  "login"     → login card is shown
+//  "dashboard" → main Heritage AI dashboard
+//
+type AppState = "slides" | "login" | "dashboard";
+
+// ─── Parallax hook ────────────────────────────────────────────────────────────
+
 function useParallax() {
   const [p, setP] = useState({ x: 0, y: 0 });
   useEffect(() => {
@@ -42,45 +56,92 @@ function useParallax() {
   return p;
 }
 
+// ─── Root experience ──────────────────────────────────────────────────────────
+
 function Experience() {
+  // Always start with "slides" on SSR/initial render (safe for Node.js).
+  const [appState, setAppState] = useState<AppState>("slides");
   const [step, setStep] = useState(0);
-  const isLogin = step >= slides.length;
   const parallax = useParallax();
 
+  // Client-only session check
   useEffect(() => {
-    if (isLogin) return;
-    const t = setTimeout(() => setStep((s) => s + 1), 9000);
-    return () => clearTimeout(t);
-  }, [step, isLogin]);
+    if (session.isAuthenticated()) {
+      setAppState("dashboard");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  const isSlides = appState === "slides";
+  const isLogin = appState === "login";
+  const isDashboard = appState === "dashboard";
+
+  // Auto-advance slides
+  useEffect(() => {
+    if (!isSlides) return;
+    const t = setTimeout(() => {
+      if (step < slides.length - 1) {
+        setStep((s) => s + 1);
+      } else {
+        setAppState("login");
+      }
+    }, 9000);
+    return () => clearTimeout(t);
+  }, [step, isSlides]);
+
+  // Keyboard navigation (slides only)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") setStep((s) => Math.min(s + 1, slides.length));
+      if (!isSlides) return;
+      if (e.key === "ArrowRight") {
+        if (step < slides.length - 1) setStep((s) => s + 1);
+        else setAppState("login");
+      }
       if (e.key === "ArrowLeft") setStep((s) => Math.max(s - 1, 0));
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [step, isSlides]);
+
+  // Called when user successfully authenticates
+  function handleLogin() {
+    session.setAuthenticated();
+    setAppState("dashboard");
+  }
+
+  // Full-screen dashboard — render outside the pre-login shell
+  if (isDashboard) {
+    return <DashboardShell />;
+  }
 
   return (
     <main className="relative h-screen w-full overflow-hidden bg-ink">
-      {isLogin ? <LoginScene parallax={parallax} /> : <SlideScene step={step} parallax={parallax} />}
-
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-[4vw] py-8">
-        <span className="font-serif text-[1.05rem] italic tracking-wide text-parchment/85">
-          Indian Heritage <span className="text-gold not-italic">AI</span>
-        </span>
-        {!isLogin && (
-          <button
-            onClick={() => setStep(slides.length)}
-            className="pointer-events-auto font-sans text-[0.68rem] uppercase tracking-[0.34em] text-parchment/55 transition-colors hover:text-gold"
-          >
-            Skip
-          </button>
+      <AnimatePresence mode="wait">
+        {isLogin ? (
+          <LoginScene
+            key="login"
+            parallax={parallax}
+            onLogin={handleLogin}
+          />
+        ) : (
+          <SlideScene key={`slide-${step}`} step={step} parallax={parallax} />
         )}
-      </header>
+      </AnimatePresence>
 
-      {!isLogin && (
+      {/* Header - ONLY SHOW "Login ->" per instructions */}
+      {isSlides && (
+        <header className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-end px-[4vw] py-8">
+          <button
+            onClick={() => setAppState("login")}
+            className="pointer-events-auto font-sans text-[0.8rem] uppercase tracking-[0.2em] text-white/70 transition-colors hover:text-white flex items-center gap-2"
+          >
+            Login <span className="text-gold">&rarr;</span>
+          </button>
+        </header>
+      )}
+
+      {/* Slide indicators */}
+      {isSlides && (
         <div className="absolute inset-x-0 bottom-10 z-40 flex justify-center gap-3">
           {slides.map((s, i) => (
             <button
@@ -98,6 +159,8 @@ function Experience() {
   );
 }
 
+// ─── SlideScene ───────────────────────────────────────────────────────────────
+
 function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y: number } }) {
   const slide = slides[step] ?? slides[0]!;
 
@@ -109,7 +172,14 @@ function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y
         : "items-start text-left";
 
   return (
-    <section key={slide.id} className="absolute inset-0">
+    <motion.section
+      key={slide.id}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+      className="absolute inset-0"
+    >
       <div className="absolute inset-0 overflow-hidden">
         <img
           key={`${slide.id}-img`}
@@ -168,13 +238,28 @@ function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y
           <InfoCard key={c.title} {...c} />
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }
 
-function LoginScene({ parallax }: { parallax: { x: number; y: number } }) {
+// ─── LoginScene ───────────────────────────────────────────────────────────────
+
+function LoginScene({
+  parallax,
+  onLogin,
+}: {
+  parallax: { x: number; y: number };
+  onLogin: () => void;
+}) {
   return (
-    <section className="absolute inset-0">
+    <motion.section
+      key="login-scene"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+      className="absolute inset-0"
+    >
       <img
         src={blend}
         alt="A blend of India's iconic monuments in golden light"
@@ -189,25 +274,68 @@ function LoginScene({ parallax }: { parallax: { x: number; y: number } }) {
       <DustParticles />
 
       <div className="absolute inset-0 z-30 flex items-center justify-center px-6">
-        <div className="reveal glass-card w-[min(30rem,90vw)] px-12 py-14 text-center">
-          <p className="font-sans text-[0.6rem] uppercase tracking-[0.5em] text-gold">Est. Heritage</p>
-          <h1 className="mt-6 font-serif text-[2.9rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
-            Indian Heritage AI
+        <div className="reveal glass-card w-[min(26rem,90vw)] px-10 py-12 text-center relative overflow-hidden">
+          
+          <h1 className="font-serif text-[2.2rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
+            Welcome Back
           </h1>
-          <p className="mt-4 font-serif text-lg font-light italic text-parchment-dim">
-            Experience history like never before.
+          <p className="mt-2 font-sans text-xs text-parchment/60 font-light mb-8">
+            Enter your details to access the archives.
           </p>
 
-          <div className="mt-11 space-y-3">
-            <button className="w-full rounded-full border border-gold/45 bg-gold/12 py-3.5 font-sans text-[0.72rem] uppercase tracking-[0.28em] text-gold transition-all duration-500 hover:bg-gold/20">
-              Continue as Guest
+          <form className="space-y-4 text-left" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+            <div className="space-y-1.5">
+              <label className="text-[0.65rem] uppercase tracking-wider text-parchment/60 font-sans ml-1">Email</label>
+              <input 
+                type="email" 
+                placeholder="scholar@heritage.ai" 
+                className="w-full bg-ink/50 border border-parchment/10 rounded-lg px-4 py-3 text-sm text-parchment placeholder:text-parchment/30 outline-none focus:border-gold/50 transition-colors"
+                required
+              />
+            </div>
+            
+            <div className="space-y-1.5 pb-2">
+              <div className="flex justify-between items-center ml-1">
+                <label className="text-[0.65rem] uppercase tracking-wider text-parchment/60 font-sans">Password</label>
+                <a href="#" className="text-[0.65rem] text-gold/70 hover:text-gold transition-colors font-sans">Forgot Password?</a>
+              </div>
+              <input 
+                type="password" 
+                placeholder="••••••••" 
+                className="w-full bg-ink/50 border border-parchment/10 rounded-lg px-4 py-3 text-sm text-parchment placeholder:text-parchment/30 outline-none focus:border-gold/50 transition-colors"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-gold text-ink py-3 font-sans text-[0.75rem] font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(230,200,120,0.3)]"
+            >
+              Sign In
             </button>
-            <button className="flex w-full items-center justify-center gap-3 rounded-full border border-parchment/18 py-3.5 font-sans text-[0.72rem] uppercase tracking-[0.28em] text-parchment/80 transition-all duration-500 hover:border-parchment/40 hover:text-parchment">
+          </form>
+
+          <div className="flex items-center gap-4 my-6">
+            <div className="h-px bg-parchment/10 flex-1"></div>
+            <span className="text-[0.65rem] uppercase tracking-wider text-parchment/40 font-sans">Or continue with</span>
+            <div className="h-px bg-parchment/10 flex-1"></div>
+          </div>
+
+          <div className="space-y-3">
+            <button
+              type="button"
+              onClick={onLogin}
+              className="flex w-full items-center justify-center gap-3 rounded-lg border border-parchment/15 bg-ink/30 py-3 font-sans text-[0.72rem] uppercase tracking-[0.2em] text-parchment/80 transition-all duration-300 hover:border-parchment/40 hover:bg-ink/50"
+            >
               <GoogleMark />
-              Sign in with Google
+              Google
             </button>
-            <button className="w-full py-3 font-sans text-[0.72rem] uppercase tracking-[0.28em] text-parchment/45 transition-colors duration-500 hover:text-gold">
-              Explore Heritage
+            <button
+              type="button"
+              onClick={onLogin}
+              className="w-full rounded-lg border border-transparent py-3 font-sans text-[0.72rem] uppercase tracking-[0.2em] text-parchment/50 transition-all duration-300 hover:text-gold"
+            >
+              Continue as Guest
             </button>
           </div>
         </div>
@@ -217,9 +345,11 @@ function LoginScene({ parallax }: { parallax: { x: number; y: number } }) {
         <span>© 2026 Indian Heritage AI</span>
         <span>Privacy · Terms</span>
       </footer>
-    </section>
+    </motion.section>
   );
 }
+
+// ─── Google mark icon ─────────────────────────────────────────────────────────
 
 function GoogleMark() {
   return (
