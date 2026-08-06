@@ -129,7 +129,7 @@ function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y
       <DustParticles />
 
       <div
-        className={`absolute inset-0 z-20 flex flex-col justify-center px-[7vw] ${alignClass}`}
+        className={`absolute inset-0 z-20 flex flex-col justify-center px-[7vw] [text-shadow:0_2px_30px_oklch(0.09_0.005_60/0.85)] ${alignClass}`}
         style={{ transform: `translate3d(${parallax.x * 14}px, ${parallax.y * 10}px, 0)` }}
       >
         <p
