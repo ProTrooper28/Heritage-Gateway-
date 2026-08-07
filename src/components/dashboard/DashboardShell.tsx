@@ -7,13 +7,15 @@ import { HomePage } from "./HomePage";
 /**
  * DashboardShell — the main app layout after the cinematic intro.
  * Composes sidebar + topbar + scrollable content area.
+ * activeItem is lifted here so sidebar and HomePage stay in sync.
  */
 export function DashboardShell() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activeItem, setActiveItem] = useState("Home");
   const { scrollY } = useScroll();
 
   const sidebarWidth = sidebarCollapsed ? "4.25rem" : "15rem";
-  
+
   // Top bar appears only after the hero scrolls away
   const topBarOpacity = useTransform(scrollY, [400, 700], [0, 1]);
   const topBarY = useTransform(scrollY, [400, 700], [-20, 0]);
@@ -48,6 +50,8 @@ export function DashboardShell() {
       <AppSidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((c) => !c)}
+        activeItem={activeItem}
+        onNavigate={setActiveItem}
       />
 
       {/* Top bar (Sticky after hero) */}
@@ -79,7 +83,7 @@ export function DashboardShell() {
           transition: "margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-        <HomePage />
+        <HomePage activeItem={activeItem} onNavigate={setActiveItem} />
       </motion.main>
     </motion.div>
   );
