@@ -20,11 +20,10 @@ import {
 type NavItem = {
   icon: React.ReactNode;
   label: string;
-  active?: boolean;
 };
 
 const NAV_MAIN: NavItem[] = [
-  { icon: <Home size={18} />, label: "Home", active: true },
+  { icon: <Home size={18} />, label: "Home" },
   { icon: <Camera size={18} />, label: "Scan Monument" },
   { icon: <Landmark size={18} />, label: "Explore Heritage" },
   { icon: <Bot size={18} />, label: "AI Historian" },
@@ -47,16 +46,22 @@ const NAV_ACCOUNT: NavItem[] = [
 type SidebarProps = {
   collapsed: boolean;
   onToggle: () => void;
+  activeItem: string;
+  onNavigate: (label: string) => void;
 };
 
 function NavGroup({
   label,
   items,
   collapsed,
+  activeItem,
+  onNavigate,
 }: {
   label: string;
   items: NavItem[];
   collapsed: boolean;
+  activeItem: string;
+  onNavigate: (label: string) => void;
 }) {
   return (
     <div className="mb-2">
@@ -85,7 +90,13 @@ function NavGroup({
       </AnimatePresence>
       {!collapsed && <div style={{ marginTop: collapsed ? "0.75rem" : "0" }} />}
       {items.map((item) => (
-        <NavItemRow key={item.label} item={item} collapsed={collapsed} />
+        <NavItemRow
+          key={item.label}
+          item={item}
+          collapsed={collapsed}
+          isActive={activeItem === item.label}
+          onClick={() => onNavigate(item.label)}
+        />
       ))}
     </div>
   );
@@ -94,14 +105,19 @@ function NavGroup({
 function NavItemRow({
   item,
   collapsed,
+  isActive,
+  onClick,
 }: {
   item: NavItem;
   collapsed: boolean;
+  isActive: boolean;
+  onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <button
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       title={collapsed ? item.label : undefined}
@@ -114,12 +130,12 @@ function NavItemRow({
         justifyContent: collapsed ? "center" : "flex-start",
         borderRadius: "0.75rem",
         border: "none",
-        background: item.active
+        background: isActive
           ? "linear-gradient(135deg, oklch(0.79 0.11 82 / 0.18), oklch(0.79 0.11 82 / 0.06))"
           : hovered
             ? "oklch(0.96 0.012 85 / 0.05)"
             : "transparent",
-        color: item.active
+        color: isActive
           ? "oklch(0.79 0.11 82)"
           : hovered
             ? "oklch(0.96 0.012 85 / 0.85)"
@@ -128,13 +144,13 @@ function NavItemRow({
         transition: "all 0.25s ease",
         position: "relative",
         marginBottom: "0.1rem",
-        boxShadow: item.active
+        boxShadow: isActive
           ? "inset 0 0 0 1px oklch(0.79 0.11 82 / 0.25)"
           : "none",
       }}
     >
       {/* Active indicator */}
-      {item.active && (
+      {isActive && (
         <span
           style={{
             position: "absolute",
@@ -150,7 +166,7 @@ function NavItemRow({
       <span
         style={{
           flexShrink: 0,
-          opacity: item.active ? 1 : hovered ? 0.9 : 0.65,
+          opacity: isActive ? 1 : hovered ? 0.9 : 0.65,
         }}
       >
         {item.icon}
@@ -166,7 +182,7 @@ function NavItemRow({
             style={{
               fontFamily: "'Jost', system-ui, sans-serif",
               fontSize: "0.8rem",
-              fontWeight: item.active ? 500 : 400,
+              fontWeight: isActive ? 500 : 400,
               letterSpacing: "0.02em",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -180,7 +196,7 @@ function NavItemRow({
   );
 }
 
-export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
+export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: SidebarProps) {
   return (
     <motion.aside
       initial={{ x: -60, opacity: 0 }}
@@ -279,7 +295,13 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
           scrollbarWidth: "none",
         }}
       >
-        <NavGroup label="Navigation" items={NAV_MAIN} collapsed={collapsed} />
+        <NavGroup
+          label="Navigation"
+          items={NAV_MAIN}
+          collapsed={collapsed}
+          activeItem={activeItem}
+          onNavigate={onNavigate}
+        />
         <div
           style={{
             height: "1px",
@@ -287,7 +309,13 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             background: "oklch(0.79 0.11 82 / 0.1)",
           }}
         />
-        <NavGroup label="Library" items={NAV_LIBRARY} collapsed={collapsed} />
+        <NavGroup
+          label="Library"
+          items={NAV_LIBRARY}
+          collapsed={collapsed}
+          activeItem={activeItem}
+          onNavigate={onNavigate}
+        />
         <div
           style={{
             height: "1px",
@@ -295,7 +323,13 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             background: "oklch(0.79 0.11 82 / 0.1)",
           }}
         />
-        <NavGroup label="Account" items={NAV_ACCOUNT} collapsed={collapsed} />
+        <NavGroup
+          label="Account"
+          items={NAV_ACCOUNT}
+          collapsed={collapsed}
+          activeItem={activeItem}
+          onNavigate={onNavigate}
+        />
       </div>
     </motion.aside>
   );
