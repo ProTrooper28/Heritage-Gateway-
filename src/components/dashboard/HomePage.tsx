@@ -107,21 +107,30 @@ export function HomePage() {
           style={{ opacity: titleOpacity, y: titleY }}
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
         >
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif font-light text-[clamp(3.5rem,8vw,6.5rem)] text-parchment leading-[1.05] tracking-[-0.03em] max-w-5xl"
-          >
-            Every Monument <br />
-            <span className="italic text-parchment-dim">Has A Story.</span>
-          </motion.h1>
+          <div className="relative max-w-5xl">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-x-10 -inset-y-6 bg-[radial-gradient(ellipse_at_center,rgba(18,16,12,0.62)_0%,rgba(18,16,12,0.34)_50%,transparent_78%)]"
+            />
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative [font-family:'Cormorant_Garamond',Georgia,serif] text-[clamp(4rem,8vw,8rem)] font-normal leading-[0.9] tracking-[-0.03em] text-[#F5F1E8] [text-shadow:0_2px_8px_rgba(0,0,0,0.32)]"
+            >
+              <span>Every </span>
+              <span className="text-[#D6B36A]">Monument</span>
+              <br />
+              <span className="italic text-[#E8DDD0]">Has A </span>
+              <span className="italic text-[#D6B36A]">Story.</span>
+            </motion.h1>
+          </div>
           
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-8 font-sans text-[clamp(1rem,1.5vw,1.25rem)] text-parchment/60 font-light max-w-xl"
+            className="relative isolate mt-8 max-w-xl font-sans text-[clamp(1rem,1.5vw,1.25rem)] font-light text-[#F5F1E8] [text-shadow:0_2px_8px_rgba(0,0,0,0.45)] before:pointer-events-none before:absolute before:-inset-x-8 before:-inset-y-4 before:-z-10 before:bg-[radial-gradient(ellipse_at_center,rgba(18,16,12,0.56)_0%,transparent_75%)]"
           >
             Experience India's heritage through AI-powered exploration.
           </motion.p>
