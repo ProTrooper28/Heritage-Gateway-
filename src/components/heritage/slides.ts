@@ -1,8 +1,8 @@
-import brihadeeswara from "@/assets/brihadeeswara.jpg";
-import tajmahal from "@/assets/tajmahal.jpg";
-import hampi from "@/assets/hampi.jpg";
-import qutubminar from "@/assets/qutubminar.jpg";
-import konark from "@/assets/konark.jpg";
+import brihadeeswara from "@/assets/slide-brihadeeswara.jpg";
+import tajmahal from "@/assets/slide-tajmahal.png";
+import hampi from "@/assets/slide-hampi.jpg";
+import ajanta from "@/assets/slide-ajanta.jpg";
+import konark from "@/assets/slide-konark.jpg";
 
 export type Slide = {
   id: string;
@@ -97,27 +97,27 @@ export const slides: Slide[] = [
     ],
   },
   {
-    id: "qutub-minar",
-    image: qutubminar,
+    id: "ajanta",
+    image: ajanta,
     index: "IV",
-    title: ["Qutub", "Minar"],
-    theme: "Victory & History",
-    subtitle: "Five storeys of sandstone, each raised by a different century.",
+    title: ["Ajanta", "Caves"],
+    theme: "Rock-Cut Devotion",
+    subtitle: "Thirty sanctuaries carved from living rock — a civilisation's prayer in stone and pigment.",
     align: "left",
     cards: [
       {
-        label: "1199 CE",
-        title: "A tower of triumph",
-        body: "Begun by Qutb ud-Din Aibak, completed across generations — history written vertically.",
-        className: "right-[7vw] bottom-[13vh]",
+        label: "2nd century BCE",
+        title: "Hidden for a millennium",
+        body: "Rediscovered in 1819, these caves slept beneath jungle canopy for over a thousand years.",
+        className: "right-[7vw] top-[20vh]",
         float: "a",
         delay: 900,
       },
       {
-        label: "Inscription",
-        title: "Bands of Kufic script",
-        body: "Verses spiral the shaft, weathering slower than the empires that carved them.",
-        className: "right-[7vw] top-[18vh]",
+        label: "Buddhist murals",
+        title: "Jataka tales in colour",
+        body: "The oldest surviving paintings of India — worlds of narrative in mineral pigment and devotion.",
+        className: "right-[7vw] bottom-[14vh]",
         float: "b",
         delay: 1250,
       },

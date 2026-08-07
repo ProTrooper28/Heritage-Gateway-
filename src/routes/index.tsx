@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
-import { InfoCard } from "@/components/heritage/InfoCard";
 import { slides } from "@/components/heritage/slides";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { session } from "@/lib/session";
@@ -85,7 +84,7 @@ function Experience() {
       } else {
         setAppState("login");
       }
-    }, 9000);
+    }, 10000);
     return () => clearTimeout(t);
   }, [step, isSlides]);
 
@@ -140,21 +139,6 @@ function Experience() {
         </header>
       )}
 
-      {/* Slide indicators */}
-      {isSlides && (
-        <div className="absolute inset-x-0 bottom-10 z-40 flex justify-center gap-3">
-          {slides.map((s, i) => (
-            <button
-              key={s.id}
-              onClick={() => setStep(i)}
-              aria-label={s.title.join(" ")}
-              className={`h-px w-14 transition-all duration-700 ${
-                i === step ? "bg-gold" : "bg-parchment/20 hover:bg-parchment/40"
-              }`}
-            />
-          ))}
-        </div>
-      )}
     </main>
   );
 }
@@ -164,83 +148,41 @@ function Experience() {
 function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y: number } }) {
   const slide = slides[step] ?? slides[0]!;
 
-  const alignClass =
-    slide.align === "center"
-      ? "items-center text-center"
-      : slide.align === "right"
-        ? "items-end text-right"
-        : "items-start text-left";
-
   return (
     <motion.section
       key={slide.id}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 1.4, ease: "easeInOut" }}
       className="absolute inset-0"
     >
+      {/* Fullscreen uploaded monument image with gentle parallax */}
       <div className="absolute inset-0 overflow-hidden">
         <img
           key={`${slide.id}-img`}
           src={slide.image}
           alt={slide.title.join(" ")}
           width={1920}
-          height={1280}
-          className="ken-burns h-full w-full object-cover"
+          height={1080}
+          className="ken-burns h-full w-full object-cover object-center"
           style={{
-            transform: `translate3d(${parallax.x * -26}px, ${parallax.y * -18}px, 0)`,
+            transform: `translate3d(${parallax.x * -18}px, ${parallax.y * -12}px, 0)`,
           }}
         />
       </div>
 
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_15%,transparent_10%,oklch(0.13_0.008_60/0.55)_55%,oklch(0.09_0.006_60/0.94)_100%)]" />
-      <LightRays />
+      {/* Very subtle vignette — keeps edges cinematic without washing out the image */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,oklch(0.06_0.003_240/0.55)_100%)]" />
+
+      {/* Floating dust particles */}
       <DustParticles />
-
-      <div
-        className={`absolute inset-0 z-20 flex flex-col justify-center px-[7vw] [text-shadow:0_2px_30px_oklch(0.09_0.005_60/0.85)] ${alignClass}`}
-        style={{ transform: `translate3d(${parallax.x * 14}px, ${parallax.y * 10}px, 0)` }}
-      >
-        <p
-          className="reveal font-sans text-[0.65rem] uppercase tracking-[0.5em] text-gold"
-          style={{ animationDelay: "150ms" }}
-        >
-          {slide.index} — {slide.theme}
-        </p>
-
-        <h1 className="mt-8 font-serif font-light leading-[1] tracking-[-0.02em] text-parchment">
-          {slide.title.map((line, i) => (
-            <span key={line} className="block overflow-hidden">
-              <span
-                className="reveal block pb-[0.06em] text-[clamp(3.5rem,8vw,8.5rem)]"
-                style={{ animationDelay: `${350 + i * 180}ms` }}
-              >
-                {line}
-              </span>
-            </span>
-          ))}
-        </h1>
-
-        <p
-          className="reveal mt-8 max-w-xl font-serif text-[1.35rem] font-light italic leading-relaxed text-parchment-dim"
-          style={{ animationDelay: "780ms" }}
-        >
-          {slide.subtitle}
-        </p>
-      </div>
-
-      <div
-        className="absolute inset-0 z-30"
-        style={{ transform: `translate3d(${parallax.x * 42}px, ${parallax.y * 30}px, 0)` }}
-      >
-        {slide.cards.map((c) => (
-          <InfoCard key={c.title} {...c} />
-        ))}
-      </div>
+      {/* Soft atmospheric light rays */}
+      <LightRays />
     </motion.section>
   );
 }
+
 
 // ─── LoginScene ───────────────────────────────────────────────────────────────
 

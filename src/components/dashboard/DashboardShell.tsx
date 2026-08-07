@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
@@ -10,9 +10,15 @@ import { HomePage } from "./HomePage";
  */
 export function DashboardShell() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { scrollY } = useScroll();
 
   const sidebarWidth = sidebarCollapsed ? "4.25rem" : "15rem";
   
+  // Top bar appears only after the hero scrolls away
+  const topBarOpacity = useTransform(scrollY, [400, 700], [0, 1]);
+  const topBarY = useTransform(scrollY, [400, 700], [-20, 0]);
+  const topBarPointer = useTransform(scrollY, (y) => (y > 500 ? "auto" : "none"));
+
   return (
     <motion.div
       key="dashboard"
@@ -44,6 +50,22 @@ export function DashboardShell() {
         onToggle={() => setSidebarCollapsed((c) => !c)}
       />
 
+      {/* Top bar (Sticky after hero) */}
+      <motion.div
+        style={{
+          opacity: topBarOpacity,
+          y: topBarY,
+          pointerEvents: topBarPointer as any,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+        }}
+      >
+        <TopBar sidebarCollapsed={sidebarCollapsed} />
+      </motion.div>
+
       {/* Main content */}
       <motion.main
         style={{
@@ -57,7 +79,7 @@ export function DashboardShell() {
           transition: "margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-        <HomePage sidebarCollapsed={sidebarCollapsed} />
+        <HomePage />
       </motion.main>
     </motion.div>
   );

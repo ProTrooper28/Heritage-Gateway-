@@ -1,25 +1,31 @@
-import { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { TopBar } from "./TopBar";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Camera,
   Bot,
   Layers,
+  Clock,
   ImagePlay,
+  ChevronRight,
+  Sparkles,
+  MapPin,
+  ArrowDown
 } from "lucide-react";
 import brihadeeswara from "@/assets/brihadeeswara.jpg";
 import hampi from "@/assets/hampi.jpg";
 import konark from "@/assets/konark.jpg";
 import tajmahal from "@/assets/tajmahal.jpg";
 import qutubminar from "@/assets/qutubminar.jpg";
-import hero1 from "@/assets/hero1.png";
-import hero2 from "@/assets/hero2.png";
-import hero3 from "@/assets/hero3.png";
-import hero4 from "@/assets/hero4.png";
-import hero5 from "@/assets/hero5.png";
+import heritageBlend from "@/assets/heritage-blend.jpg";
 
+// ─── Shared tokens ────────────────────────────────────────────────────────────
+const GOLD = "oklch(0.79 0.11 82)";
+const PARCHMENT = "oklch(0.96 0.012 85)";
+const PARCHMENT_DIM = "oklch(0.78 0.015 85 / 0.72)";
+const GLASS_BG = "linear-gradient(150deg, oklch(0.96 0.012 85 / 0.05), oklch(0.13 0.008 60 / 0.7))";
 const GLASS_BORDER = "1px solid oklch(0.79 0.11 82 / 0.14)";
 
+// ─── Animation variants ───────────────────────────────────────────────────────
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: (delay = 0) => ({
@@ -43,138 +49,142 @@ const cardReveal = {
   },
 };
 
-const HEROES = [
-  { id: 1, image: hero1 },
-  { id: 2, image: hero2 },
-  { id: 3, image: hero3 },
-  { id: 4, image: hero4 },
-  { id: 5, image: hero5 },
-];
+// ─── Main Component ───────────────────────────────────────────────────────────
+export function HomePage() {
+  const { scrollY } = useScroll();
 
-export function HomePage({ sidebarCollapsed }: { sidebarCollapsed?: boolean }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Scroll transforms for the Apple-style hero
+  // Hero slowly shrinks and moves up
+  const heroScale = useTransform(scrollY, [0, 800], [1, 0.85]);
+  const heroY = useTransform(scrollY, [0, 800], [0, -100]);
+  const heroOpacity = useTransform(scrollY, [500, 900], [1, 0]);
+  const heroBlur = useTransform(scrollY, [200, 600], ["blur(0px)", "blur(12px)"]);
   
-  // Track scroll over the 500vh container
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  // Smooth out the scroll progress for smoother crossfades
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  // Title fades out quickly
+  const titleOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const titleY = useTransform(scrollY, [0, 300], [0, -50]);
+  
+  // Indicator fades out immediately
+  const indicatorOpacity = useTransform(scrollY, [0, 100], [1, 0]);
 
   return (
-    <div className="relative">
+    <>
       {/* 
         ==================================================
-        SECTION 1: 500vh Scroll Container
+        SECTION 1: FULLSCREEN HERO (Fixed in background)
         ==================================================
       */}
-      <div ref={containerRef} style={{ height: "500vh" }}>
+      <motion.div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: -1, // Behind the sidebar and main content
+          scale: heroScale,
+          y: heroY,
+          opacity: heroOpacity,
+          filter: heroBlur,
+          transformOrigin: "top center",
+          overflow: "hidden",
+          backgroundColor: "oklch(0.1 0 0)",
+        }}
+      >
+        <img
+          src={heritageBlend}
+          alt="Indian Heritage"
+          className="w-full h-full object-cover opacity-80"
+          style={{ transform: "scale(1.05)" }} // Slight zoom to allow parallax
+        />
         
-        {/* Fixed Hero Sequence Wrapper */}
-        <div 
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: -1, 
-            backgroundColor: "oklch(0.1 0 0)",
-            overflow: "hidden"
-          }}
+        {/* Dust and Fog effect gradients */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,transparent_20%,oklch(0.05_0.01_60/0.9)_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent opacity-80" />
+        
+        {/* Editorial Title */}
+        <motion.div 
+          style={{ opacity: titleOpacity, y: titleY }}
+          className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
         >
-          {HEROES.map((hero, index) => {
-            // Calculate ranges based on 5 images (0.2 progress each)
-            const startFadeIn = index === 0 ? 0 : (index - 0.5) * 0.2;
-            const fullVisible = index * 0.2;
-            const startFadeOut = (index + 0.5) * 0.2;
-            const endFadeOut = (index + 1) * 0.2;
-            
-            // For the last image, don't fade out until the very end, and let dashboard cover it
-            const actualEndFadeOut = index === 4 ? 1 : endFadeOut;
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="font-serif font-light text-[clamp(3.5rem,8vw,6.5rem)] text-parchment leading-[1.05] tracking-[-0.03em] max-w-5xl"
+          >
+            Every Monument <br />
+            <span className="italic text-parchment-dim">Has A Story.</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 font-sans text-[clamp(1rem,1.5vw,1.25rem)] text-parchment/60 font-light max-w-xl"
+          >
+            Experience India's heritage through AI-powered exploration.
+          </motion.p>
+          
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-12 group relative overflow-hidden rounded-full border border-gold/30 bg-ink/40 backdrop-blur-md px-8 py-4 transition-all hover:border-gold hover:bg-gold/10"
+          >
+            <span className="relative z-10 font-sans text-xs uppercase tracking-[0.3em] text-gold group-hover:text-gold/90 transition-colors flex items-center gap-3">
+              Begin Journey
+              <ChevronRight size={14} />
+            </span>
+          </motion.button>
+        </motion.div>
 
-            // Use hooks inside loop (this is safe because HEROES length is constant)
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const opacity = useTransform(
-              smoothProgress,
-              [startFadeIn, fullVisible, startFadeOut, actualEndFadeOut],
-              [0, 1, 1, 0]
-            );
-            
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const scale = useTransform(
-              smoothProgress,
-              [startFadeIn, actualEndFadeOut],
-              [1.1, 0.95]
-            );
+        {/* Scroll Indicator */}
+        <motion.div 
+          style={{ opacity: indicatorOpacity }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-parchment/40"
+        >
+          <span className="font-sans text-[0.6rem] uppercase tracking-[0.3em]">Scroll</span>
+          <motion.div 
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ArrowDown size={14} />
+          </motion.div>
+        </motion.div>
+      </motion.div>
 
-            return (
-              <motion.div
-                key={hero.id}
-                className="absolute inset-0"
-                style={{ opacity, scale, transformOrigin: "center 30%" }}
-              >
-                <img
-                  src={hero.image}
-                  alt={`Hero ${hero.id}`}
-                  className="w-full h-full object-cover"
-                />
-                
-                {/* Cinematic Overlays */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,oklch(0.05_0.01_60/0.4)_100%)]" />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent opacity-60" />
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+      {/* Spacer to push content below the hero */}
+      <div style={{ height: "100vh" }} />
 
       {/* 
         ==================================================
-        DASHBOARD CONTENT 
-        Begins right after the 500vh spacer ends
+        DASHBOARD CONTENT (Reveals on scroll)
         ==================================================
       */}
-      <div className="relative z-10 min-h-screen" style={{ backgroundColor: "oklch(0.13 0.008 60)" }}>
-        {/* Ambient background glow for dashboard */}
-        <div className="absolute inset-0 pointer-events-none z-0" style={{
-          background: "radial-gradient(ellipse 60% 50% at 25% 0%, oklch(0.79 0.11 82 / 0.06), transparent)"
-        }} />
-
-        {/* Sticky TopBar inside dashboard flow */}
-        <div className="sticky top-4 z-40 mb-12" style={{ pointerEvents: "auto" }}>
-          <TopBar sidebarCollapsed={sidebarCollapsed || false} />
-        </div>
-
-        <div className="pb-32 pt-20 relative z-10 px-6 md:px-12">
-          <Section2Welcome />
-          <Section3Explore />
-          <Section4Featured />
-          <Section5AIFeatures />
-          <Section6Collections />
-          
-          <motion.footer 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mt-40 border-t border-parchment/10 pt-16 pb-8 text-center"
-          >
-            <h2 className="font-serif text-3xl text-parchment/40 mb-6 italic">History Awaits.</h2>
-            <div className="flex justify-center gap-8 font-sans text-[0.65rem] uppercase tracking-[0.2em] text-parchment/30">
-              <span className="hover:text-gold transition-colors cursor-pointer">Privacy</span>
-              <span className="hover:text-gold transition-colors cursor-pointer">Terms</span>
-              <span className="hover:text-gold transition-colors cursor-pointer">Credits</span>
-            </div>
-          </motion.footer>
-        </div>
+      <div className="relative z-10 pb-32 pt-20">
+        <Section2Welcome />
+        <Section3Explore />
+        <Section4Featured />
+        <Section5AIFeatures />
+        <Section6Collections />
+        
+        {/* Footer */}
+        <motion.footer 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-40 border-t border-parchment/10 pt-16 pb-8 text-center"
+        >
+          <h2 className="font-serif text-3xl text-parchment/40 mb-6 italic">History Awaits.</h2>
+          <div className="flex justify-center gap-8 font-sans text-[0.65rem] uppercase tracking-[0.2em] text-parchment/30">
+            <span className="hover:text-gold transition-colors cursor-pointer">Privacy</span>
+            <span className="hover:text-gold transition-colors cursor-pointer">Terms</span>
+            <span className="hover:text-gold transition-colors cursor-pointer">Credits</span>
+          </div>
+        </motion.footer>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -196,6 +206,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ─── Section 2: Welcome Back ──────────────────────────────────────────────────
 function Section2Welcome() {
   return (
     <motion.section
@@ -215,6 +226,7 @@ function Section2Welcome() {
   );
 }
 
+// ─── Section 3: Continue Exploring ────────────────────────────────────────────
 const RECENT = [
   { id: "1", title: "Brihadeeswara Temple", subtitle: "Tamil Nadu", image: brihadeeswara },
   { id: "2", title: "Hampi Ruins", subtitle: "Karnataka", image: hampi },
@@ -259,6 +271,7 @@ function Section3Explore() {
   );
 }
 
+// ─── Section 4: Featured Monuments ────────────────────────────────────────────
 const FEATURED = [
   { id: "f1", title: "Taj Mahal", desc: "The eternal elegy of Shah Jahan.", image: tajmahal },
   { id: "f2", title: "Qutub Minar", desc: "History written vertically.", image: qutubminar },
@@ -296,6 +309,7 @@ function Section4Featured() {
   );
 }
 
+// ─── Section 5: AI Features ───────────────────────────────────────────────────
 const AI_FEATURES = [
   { icon: Camera, title: "AI Monument Scanner", desc: "Point your camera at any ancient structure. Our vision models instantly decode its history, architecture, and hidden stories in real-time." },
   { icon: Bot, title: "The AI Historian", desc: "A personalized guide powered by centuries of archives. Ask questions, debate interpretations, and converse with history itself." },
@@ -321,11 +335,13 @@ function Section5AIFeatures() {
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             className={`flex flex-col gap-12 items-center ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
           >
+            {/* Massive Abstract Visual block */}
             <div className="w-full md:w-1/2 aspect-square max-h-[500px] rounded-[2.5rem] bg-ink/50 border border-parchment/5 flex items-center justify-center relative overflow-hidden group">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.79_0.11_82/0.1),transparent)] opacity-0 transition-opacity duration-1000 group-hover:opacity-100" />
               <feat.icon size={80} className="text-gold/20 transition-transform duration-1000 group-hover:scale-110 group-hover:text-gold/40" strokeWidth={1} />
             </div>
             
+            {/* Text block with lots of whitespace */}
             <div className="w-full md:w-1/2 p-8 md:p-16">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-gold/20 text-gold mb-8">
                 <feat.icon size={18} />
@@ -342,6 +358,7 @@ function Section5AIFeatures() {
   );
 }
 
+// ─── Section 6: Collections ───────────────────────────────────────────────────
 const COLLECTIONS = ["UNESCO World Heritage", "Chola Temples", "Mughal Architecture", "Rajput Forts", "Lost Cities", "Buddhist Caves"];
 
 function Section6Collections() {
@@ -357,7 +374,7 @@ function Section6Collections() {
       <SectionTitle>Thematic Collections</SectionTitle>
       
       <div className="flex gap-4 overflow-x-auto pb-8 hide-scrollbar">
-        {COLLECTIONS.map((c) => (
+        {COLLECTIONS.map((c, i) => (
           <motion.div
             key={c}
             whileHover={{ scale: 1.03 }}
