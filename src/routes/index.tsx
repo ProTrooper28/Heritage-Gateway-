@@ -200,59 +200,44 @@ function LoginScene({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1.2, ease: "easeInOut" }}
-      className="absolute inset-0"
+      className="absolute inset-0 flex"
     >
-      {/* ── Cinematic background: Konark Sun Temple with Ken Burns ── */}
-      <div className="absolute inset-0 overflow-hidden">
-        <img
-          src={konark}
-          alt="Konark Sun Temple — a timeless stone chariot"
-          width={1920}
-          height={1280}
-          loading="lazy"
-          className="ken-burns h-full w-full object-cover object-center"
-          style={{
-            transform: `translate3d(${parallax.x * -18}px, ${parallax.y * -12}px, 0)`,
-            filter: "saturate(0.72) brightness(0.62) contrast(1.08)",
-          }}
-        />
-      </div>
+      {/* ════════════════════════════════════════════════════════════════════════
+          LEFT PANEL — Login form on dark surface
+          ════════════════════════════════════════════════════════════════════════ */}
+      <div className="relative flex h-full w-[52%] items-center justify-center overflow-hidden bg-ink px-6">
+        {/* Soft ambient glow from the seam */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_100%_50%,oklch(0.79_0.11_82/0.04),transparent_70%)]" />
 
-      {/* ── Layered dark overlay: radial vignette + directional gradient ── */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_90%_at_60%_50%,oklch(0.09_0.004_60/0.45)_0%,oklch(0.05_0.002_60/0.92)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[oklch(0.05_0.002_60/0.88)] via-transparent to-[oklch(0.05_0.002_60/0.3)]" />
+        {/* Subtle drifting dust on the form side */}
+        <DustParticles />
 
-      {/* ── Atmospheric effects ── */}
-      <LightRays />
-      <DustParticles />
-
-      {/* ── Login card ── */}
-      <div className="absolute inset-0 z-30 flex items-center justify-center px-6">
+        {/* ── Login card ── */}
         <motion.div
           initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 1.0, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="login-card w-[min(27rem,92vw)] px-10 py-12 text-center relative overflow-hidden"
+          className="login-card w-[min(30rem,90%)] px-12 py-14 text-left relative overflow-hidden"
         >
           {/* Card inner gold shimmer line */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.6)] to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.5)] to-transparent" />
 
           {/* ── Branding ── */}
-          <div className="mb-8 flex flex-col items-center gap-3">
+          <div className="mb-10 flex flex-col items-start gap-4">
             <HeritageMark />
             <div>
-              <h1 className="font-serif text-[1.95rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
+              <h1 className="font-serif text-[2.1rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
                 Indian Heritage AI
               </h1>
-              <p className="mt-2 font-sans text-[0.72rem] leading-relaxed text-parchment/55 font-light max-w-[20rem] mx-auto">
+              <p className="mt-3 font-sans text-[0.74rem] leading-relaxed text-parchment/55 font-light max-w-[22rem]">
                 Explore India's timeless monuments with AI-powered historical discovery.
               </p>
             </div>
           </div>
 
           {/* ── Email / password form ── */}
-          <form className="space-y-4 text-left" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
-            <div className="space-y-1.5">
+          <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+            <div className="space-y-2">
               <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans ml-1">Email</label>
               <input
                 type="email"
@@ -262,7 +247,7 @@ function LoginScene({
               />
             </div>
 
-            <div className="space-y-1.5 pb-2">
+            <div className="space-y-2 pb-1">
               <div className="flex justify-between items-center ml-1">
                 <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans">Password</label>
                 <a href="#" className="text-[0.62rem] text-gold/65 hover:text-gold transition-colors duration-200 font-sans">Forgot Password?</a>
@@ -285,7 +270,7 @@ function LoginScene({
           </form>
 
           {/* ── Divider ── */}
-          <div className="flex items-center gap-4 my-6">
+          <div className="flex items-center gap-4 my-7">
             <div className="h-px bg-parchment/10 flex-1" />
             <span className="text-[0.6rem] uppercase tracking-[0.22em] text-parchment/35 font-sans">Or continue with</span>
             <div className="h-px bg-parchment/10 flex-1" />
@@ -311,15 +296,74 @@ function LoginScene({
           </div>
 
           {/* Card bottom gold shimmer line */}
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.25)] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.2)] to-transparent" />
         </motion.div>
+
+        {/* ── Footer (left panel) ── */}
+        <footer className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-12 py-8 font-sans text-[0.58rem] uppercase tracking-[0.28em] text-parchment/25">
+          <span>© 2026 Indian Heritage AI</span>
+          <span>Privacy · Terms</span>
+        </footer>
       </div>
 
-      {/* ── Footer ── */}
-      <footer className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-[4vw] py-8 font-sans text-[0.58rem] uppercase tracking-[0.28em] text-parchment/30">
-        <span>© 2026 Indian Heritage AI</span>
-        <span>Privacy · Terms</span>
-      </footer>
+      {/* ════════════════════════════════════════════════════════════════════════
+          RIGHT PANEL — Heritage image with cinematic treatment
+          ════════════════════════════════════════════════════════════════════════ */}
+      <div className="relative h-full w-[48%] overflow-hidden">
+        {/* Konark Sun Temple with Ken Burns + parallax */}
+        <img
+          src={konark}
+          alt="Konark Sun Temple — a chariot for the sun"
+          width={1920}
+          height={1280}
+          loading="lazy"
+          className="ken-burns h-full w-full object-cover object-center"
+          style={{
+            transform: `translate3d(${parallax.x * -14}px, ${parallax.y * -10}px, 0)`,
+            filter: "saturate(0.8) brightness(0.7) contrast(1.05)",
+          }}
+        />
+
+        {/* Dark overlay so the form stays the focus */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-[oklch(0.05_0.002_60/0.25)] to-[oklch(0.05_0.002_60/0.65)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,transparent_30%,oklch(0.04_0.002_60/0.55)_100%)]" />
+
+        {/* Soft fog gradient at the bottom */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-[oklch(0.04_0.002_60/0.7)] to-transparent" />
+
+        {/* Warm volumetric light rays */}
+        <LightRays />
+
+        {/* Drifting dust particles */}
+        <DustParticles />
+
+        {/* Editorial caption — bottom right */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute bottom-12 right-12 z-20 text-right"
+        >
+          <p className="font-sans text-[0.58rem] uppercase tracking-[0.32em] text-gold/70 mb-2">
+            Konark · Odisha
+          </p>
+          <p className="font-serif text-[1.15rem] italic font-light text-parchment/60 leading-snug max-w-[16rem] ml-auto">
+            A chariot for the sun, with wheels that keep time itself.
+          </p>
+        </motion.div>
+
+        {/* Vertical "EST." accent — top right */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.4 }}
+          className="absolute top-12 right-12 z-20 flex flex-col items-center gap-3"
+        >
+          <span className="font-sans text-[0.55rem] uppercase tracking-[0.4em] text-parchment/30 [writing-mode:vertical-rl] rotate-180">
+            Est. 1250
+          </span>
+        </motion.div>
+      </div>
     </motion.section>
   );
 }
