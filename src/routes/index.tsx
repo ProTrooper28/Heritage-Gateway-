@@ -5,7 +5,7 @@ import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
 import { slides } from "@/components/heritage/slides";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { session } from "@/lib/session";
-import blend from "@/assets/heritage-blend.jpg";
+import konark from "@/assets/konark.jpg";
 
 export const Route = createFileRoute("/")(
   {
@@ -199,91 +199,124 @@ function LoginScene({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 1.2, ease: "easeInOut" }}
       className="absolute inset-0"
     >
-      <img
-        src={blend}
-        alt="A blend of India's iconic monuments in golden light"
-        width={1920}
-        height={1280}
-        loading="lazy"
-        className="h-full w-full scale-105 object-cover opacity-70"
-        style={{ transform: `scale(1.08) translate3d(${parallax.x * -18}px, ${parallax.y * -12}px, 0)` }}
-      />
-      <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_50%_45%,oklch(0.13_0.008_60/0.55),oklch(0.07_0.005_60/0.96))]" />
+      {/* ── Cinematic background: Konark Sun Temple with Ken Burns ── */}
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src={konark}
+          alt="Konark Sun Temple — a timeless stone chariot"
+          width={1920}
+          height={1280}
+          loading="lazy"
+          className="ken-burns h-full w-full object-cover object-center"
+          style={{
+            transform: `translate3d(${parallax.x * -18}px, ${parallax.y * -12}px, 0)`,
+            filter: "saturate(0.72) brightness(0.62) contrast(1.08)",
+          }}
+        />
+      </div>
+
+      {/* ── Layered dark overlay: radial vignette + directional gradient ── */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_90%_at_60%_50%,oklch(0.09_0.004_60/0.45)_0%,oklch(0.05_0.002_60/0.92)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[oklch(0.05_0.002_60/0.88)] via-transparent to-[oklch(0.05_0.002_60/0.3)]" />
+
+      {/* ── Atmospheric effects ── */}
       <LightRays />
       <DustParticles />
 
+      {/* ── Login card ── */}
       <div className="absolute inset-0 z-30 flex items-center justify-center px-6">
-        <div className="reveal glass-card w-[min(26rem,90vw)] px-10 py-12 text-center relative overflow-hidden">
-          
-          <h1 className="font-serif text-[2.2rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
-            Welcome Back
-          </h1>
-          <p className="mt-2 font-sans text-xs text-parchment/60 font-light mb-8">
-            Enter your details to access the archives.
-          </p>
+        <motion.div
+          initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1.0, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="login-card w-[min(27rem,92vw)] px-10 py-12 text-center relative overflow-hidden"
+        >
+          {/* Card inner gold shimmer line */}
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.6)] to-transparent" />
 
+          {/* ── Branding ── */}
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <HeritageMark />
+            <div>
+              <h1 className="font-serif text-[1.95rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
+                Indian Heritage AI
+              </h1>
+              <p className="mt-2 font-sans text-[0.72rem] leading-relaxed text-parchment/55 font-light max-w-[20rem] mx-auto">
+                Explore India's timeless monuments with AI-powered historical discovery.
+              </p>
+            </div>
+          </div>
+
+          {/* ── Email / password form ── */}
           <form className="space-y-4 text-left" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
             <div className="space-y-1.5">
-              <label className="text-[0.65rem] uppercase tracking-wider text-parchment/60 font-sans ml-1">Email</label>
-              <input 
-                type="email" 
-                placeholder="scholar@heritage.ai" 
-                className="w-full bg-ink/50 border border-parchment/10 rounded-lg px-4 py-3 text-sm text-parchment placeholder:text-parchment/30 outline-none focus:border-gold/50 transition-colors"
+              <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans ml-1">Email</label>
+              <input
+                type="email"
+                placeholder="scholar@heritage.ai"
+                className="heritage-input"
                 required
               />
             </div>
-            
+
             <div className="space-y-1.5 pb-2">
               <div className="flex justify-between items-center ml-1">
-                <label className="text-[0.65rem] uppercase tracking-wider text-parchment/60 font-sans">Password</label>
-                <a href="#" className="text-[0.65rem] text-gold/70 hover:text-gold transition-colors font-sans">Forgot Password?</a>
+                <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans">Password</label>
+                <a href="#" className="text-[0.62rem] text-gold/65 hover:text-gold transition-colors duration-200 font-sans">Forgot Password?</a>
               </div>
-              <input 
-                type="password" 
-                placeholder="••••••••" 
-                className="w-full bg-ink/50 border border-parchment/10 rounded-lg px-4 py-3 text-sm text-parchment placeholder:text-parchment/30 outline-none focus:border-gold/50 transition-colors"
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="heritage-input"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-gold text-ink py-3 font-sans text-[0.75rem] font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:bg-gold/90 hover:shadow-[0_0_20px_rgba(230,200,120,0.3)]"
+              className="heritage-btn-primary w-full"
             >
+              <span className="heritage-btn-shine" />
               Sign In
             </button>
           </form>
 
+          {/* ── Divider ── */}
           <div className="flex items-center gap-4 my-6">
-            <div className="h-px bg-parchment/10 flex-1"></div>
-            <span className="text-[0.65rem] uppercase tracking-wider text-parchment/40 font-sans">Or continue with</span>
-            <div className="h-px bg-parchment/10 flex-1"></div>
+            <div className="h-px bg-parchment/10 flex-1" />
+            <span className="text-[0.6rem] uppercase tracking-[0.22em] text-parchment/35 font-sans">Or continue with</span>
+            <div className="h-px bg-parchment/10 flex-1" />
           </div>
 
+          {/* ── Social / guest buttons ── */}
           <div className="space-y-3">
             <button
               type="button"
               onClick={onLogin}
-              className="flex w-full items-center justify-center gap-3 rounded-lg border border-parchment/15 bg-ink/30 py-3 font-sans text-[0.72rem] uppercase tracking-[0.2em] text-parchment/80 transition-all duration-300 hover:border-parchment/40 hover:bg-ink/50"
+              className="flex w-full items-center justify-center gap-3 rounded-xl border border-parchment/12 bg-[oklch(0.13_0.005_60/0.5)] px-5 py-3 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-parchment/75 backdrop-blur-sm transition-all duration-300 hover:border-gold/30 hover:bg-[oklch(0.16_0.008_82/0.55)] hover:text-parchment hover:shadow-[0_0_18px_oklch(0.79_0.11_82/0.12)]"
             >
               <GoogleMark />
-              Google
+              Continue with Google
             </button>
             <button
               type="button"
               onClick={onLogin}
-              className="w-full rounded-lg border border-transparent py-3 font-sans text-[0.72rem] uppercase tracking-[0.2em] text-parchment/50 transition-all duration-300 hover:text-gold"
+              className="w-full rounded-xl border border-parchment/8 bg-transparent py-3 font-sans text-[0.7rem] uppercase tracking-[0.18em] text-parchment/40 transition-all duration-300 hover:border-gold/20 hover:text-gold/80"
             >
               Continue as Guest
             </button>
           </div>
-        </div>
+
+          {/* Card bottom gold shimmer line */}
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.25)] to-transparent" />
+        </motion.div>
       </div>
 
-      <footer className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-[4vw] py-8 font-sans text-[0.6rem] uppercase tracking-[0.3em] text-parchment/35">
+      {/* ── Footer ── */}
+      <footer className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-[4vw] py-8 font-sans text-[0.58rem] uppercase tracking-[0.28em] text-parchment/30">
         <span>© 2026 Indian Heritage AI</span>
         <span>Privacy · Terms</span>
       </footer>
@@ -299,6 +332,29 @@ function GoogleMark() {
       <path
         fill="currentColor"
         d="M21.35 11.1H12v3.2h5.35c-.23 1.4-1.66 4.1-5.35 4.1a5.9 5.9 0 1 1 0-11.8c1.7 0 2.84.72 3.5 1.34l2.38-2.3A9.1 9.1 0 1 0 12 21.2c5.26 0 8.73-3.7 8.73-8.9 0-.6-.06-1.05-.15-1.5Z"
+      />
+    </svg>
+  );
+}
+
+// ─── Heritage mark icon ───────────────────────────────────────────────────────
+
+function HeritageMark() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 2L2 7V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V7L12 2Z"
+        stroke="var(--color-gold)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 22V7M12 7L2 12M12 7L22 12"
+        stroke="var(--color-gold)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

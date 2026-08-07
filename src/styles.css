@@ -368,3 +368,60 @@
     transform: translateY(0);
   }
 }
+
+/* ─── Login Page Utilities ─────────────────────────────────────────────────── */
+
+@utility login-card {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--parchment) 4%, transparent),
+    color-mix(in oklab, var(--ink) 85%, transparent)
+  );
+  backdrop-filter: blur(36px) saturate(110%);
+  border: 1px solid color-mix(in oklab, var(--gold) 12%, transparent);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 32px 80px -20px oklch(0 0 0 / 0.95),
+    inset 0 1px 0 color-mix(in oklab, var(--parchment) 8%, transparent);
+}
+
+@utility heritage-input {
+  @apply w-full rounded-xl border px-5 py-3.5 text-[0.8rem] transition-all duration-300 font-sans outline-none;
+  background-color: oklch(0.1 0.003 60 / 0.55);
+  border-color: color-mix(in oklab, var(--parchment) 8%, transparent);
+  color: var(--parchment);
+}
+.heritage-input::placeholder {
+  color: color-mix(in oklab, var(--parchment) 25%, transparent);
+}
+.heritage-input:hover {
+  border-color: color-mix(in oklab, var(--parchment) 15%, transparent);
+}
+.heritage-input:focus {
+  background-color: oklch(0.12 0.005 60 / 0.8);
+  border-color: color-mix(in oklab, var(--gold) 40%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--gold) 20%, transparent),
+              0 0 16px color-mix(in oklab, var(--gold) 15%, transparent);
+}
+
+@utility heritage-btn-primary {
+  @apply relative overflow-hidden rounded-xl bg-[var(--gold)] py-3.5 font-sans text-[0.75rem] font-bold uppercase tracking-[0.25em] text-[var(--ink)] transition-all duration-300;
+}
+.heritage-btn-primary:hover {
+  background-color: color-mix(in oklab, var(--gold) 90%, white);
+  box-shadow: 0 0 24px color-mix(in oklab, var(--gold) 35%, transparent);
+  transform: translateY(-1px);
+}
+.heritage-btn-primary:active {
+  transform: translateY(1px);
+}
+
+@utility heritage-btn-shine {
+  @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent;
+  animation: shine 4s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-150%) skewX(-25deg); }
+  25%, 100% { transform: translateX(150%) skewX(-25deg); }
+}
