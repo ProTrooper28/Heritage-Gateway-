@@ -4,6 +4,7 @@ import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
 import { TimelineExplorer } from "./TimelineExplorer";
+import { ExploreHeritagePage } from "../explore/ExploreHeritagePage";
 
 /**
  * DashboardShell — the main app layout after the cinematic intro.
@@ -87,6 +88,8 @@ export function DashboardShell() {
         <AnimatePresence mode="wait">
           {activeItem === "Timeline Explorer" ? (
             <TimelineExplorer key="timeline-explorer" onNavigate={setActiveItem} />
+          ) : activeItem === "Explore Heritage" ? (
+            <ExploreHeritagePage key="explore-heritage" />
           ) : (
             <HomePage key="home-page" activeItem={activeItem} onNavigate={setActiveItem} />
           )}
