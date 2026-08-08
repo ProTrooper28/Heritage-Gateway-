@@ -6,7 +6,6 @@ import {
   Layers,
   Clock,
   ImagePlay,
-  ChevronRight,
   ArrowDown,
   Landmark,
   BookMarked,
@@ -15,6 +14,7 @@ import {
   Settings,
   User,
 } from "lucide-react";
+import { SpecularButton } from "@/components/ui/SpecularButton";
 import brihadeeswara from "@/assets/brihadeeswara.jpg";
 import hampi from "@/assets/hampi.jpg";
 import konark from "@/assets/konark.jpg";
@@ -264,21 +264,34 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
                 onClick calls handleBeginJourney → sets isLanding = false
                 This button IS interactive (pointer-events: auto from parent)
               */}
-              <motion.button
-                id="begin-journey-btn"
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.8, ease: EASE }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={handleBeginJourney}
-                className="mt-12 group relative overflow-hidden rounded-full border border-gold/30 bg-ink/40 backdrop-blur-md px-8 py-4 transition-all hover:border-gold hover:bg-gold/10 cursor-pointer"
+                className="mt-12"
               >
-                <span className="relative z-10 font-sans text-xs uppercase tracking-[0.3em] text-gold group-hover:text-gold/90 transition-colors flex items-center gap-3">
+                <SpecularButton
+                  onClick={handleBeginJourney}
+                  size="lg"
+                  radius={999}
+                  tint="#ffffff"
+                  tintOpacity={0.03}
+                  blur={12}
+                  textColor="#F6F4F1"
+                  lineColor="#E5D1A5"
+                  baseColor="#2B2F34"
+                  intensity={0.65}
+                  shineSize={8}
+                  shineFade={30}
+                  thickness={1}
+                  speed={0.18}
+                  followMouse={true}
+                  autoAnimate={false}
+                  proximity={220}
+                >
                   Begin Journey
-                  <ChevronRight size={14} />
-                </span>
-              </motion.button>
+                </SpecularButton>
+              </motion.div>
             </motion.div>
 
             {/* Scroll indicator (fades on scroll, vanishes when menu opens) */}
