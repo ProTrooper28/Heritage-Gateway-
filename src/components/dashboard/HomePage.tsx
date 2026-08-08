@@ -268,7 +268,7 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.8, ease: EASE }}
-                className="mt-12"
+                className="mt-12 flex w-full justify-center"
               >
                 <SpecularButton
                   onClick={handleBeginJourney}
