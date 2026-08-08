@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
 import Orb from "@/components/ui/Orb";
 import { session } from "@/lib/session";
@@ -17,15 +17,27 @@ type AuthMode = "login" | "signup";
 export function AuthCard({ mode }: { mode: AuthMode }) {
   const isLogin = mode === "login";
   const navigate = useNavigate();
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [orbReady, setOrbReady] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const handleOrbReady = useCallback(() => setOrbReady(true), []);
+
+  // Warm the post-login destination (/home + its _app shell) as soon as the
+  // auth page mounts — by the time the user finishes typing, the click lands
+  // on an already-loaded page, so navigation feels instant.
+  useEffect(() => {
+    router.preloadRoute({ to: "/home" }).catch(() => {
+      /* best-effort warmup */
+    });
+  }, [router]);
 
   function finishAuth() {
     session.setAuthenticated();
-    navigate({ to: "/profile" });
+    setSubmitting(true);
+    navigate({ to: "/home" });
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -144,9 +156,28 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
             />
           </div>
 
-          <button type="submit" className="heritage-btn-primary w-full">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="heritage-btn-primary w-full disabled:cursor-wait disabled:opacity-80"
+          >
             <span className="heritage-btn-shine" />
-            {isLogin ? "Sign In" : "Create Account"}
+            {submitting ? (
+              <span className="inline-flex items-center gap-2">
+                <span
+                  className="inline-block h-3.5 w-3.5 animate-spin rounded-full"
+                  style={{
+                    border: "2px solid rgba(0,0,0,0.25)",
+                    borderTopColor: "currentColor",
+                  }}
+                />
+                {isLogin ? "Signing In…" : "Creating…"}
+              </span>
+            ) : isLogin ? (
+              "Sign In"
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
 
