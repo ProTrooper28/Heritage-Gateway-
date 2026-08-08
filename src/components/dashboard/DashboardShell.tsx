@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
+import { AIHistorian } from "./AIHistorian";
 import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 import { TimelineExplorer } from "./TimelineExplorer";
 
@@ -10,18 +11,27 @@ import { TimelineExplorer } from "./TimelineExplorer";
  * DashboardShell — the main app layout after the cinematic intro.
  * Composes sidebar + topbar + scrollable content area.
  * activeItem is lifted here so sidebar and HomePage stay in sync.
+ *
+ * selectedMonument — optional monument context forwarded to AI Historian.
+ * When the user browses a specific monument in other feature panels, that
+ * panel can call setSelectedMonument() to give AI Historian automatic context.
  */
 export function DashboardShell() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState("Home");
+  const [selectedMonument, setSelectedMonument] = useState<string | undefined>(undefined);
   const { scrollY } = useScroll();
 
   const sidebarWidth = sidebarCollapsed ? "4.25rem" : "15rem";
 
-  // Top bar appears only after the hero scrolls away
-  const topBarOpacity = useTransform(scrollY, [400, 700], [0, 1]);
-  const topBarY = useTransform(scrollY, [400, 700], [-20, 0]);
-  const topBarPointer = useTransform(scrollY, (y) => (y > 500 ? "auto" : "none"));
+  // Top bar appears only after the hero scrolls away.
+  // For AI Historian view we always show it (scroll-independent).
+  const isAIHistorian = activeItem === "AI Historian";
+  const topBarOpacity = useTransform(scrollY, [400, 700], [isAIHistorian ? 1 : 0, 1]);
+  const topBarY = useTransform(scrollY, [400, 700], [isAIHistorian ? 0 : -20, 0]);
+  const topBarPointer = useTransform(scrollY, (y) =>
+    isAIHistorian || y > 500 ? "auto" : "none",
+  );
 
   return (
     <motion.div
@@ -56,7 +66,7 @@ export function DashboardShell() {
         onNavigate={setActiveItem}
       />
 
-      {/* Top bar (Sticky after hero) */}
+      {/* Top bar (Sticky after hero; always visible in AI Historian view) */}
       <motion.div
         style={{
           opacity: topBarOpacity,
@@ -86,7 +96,12 @@ export function DashboardShell() {
         }}
       >
 <AnimatePresence mode="wait">
-  {activeItem === "Scan Monument" ? (
+  {isAIHistorian ? (
+    <AIHistorian
+      monumentContext={selectedMonument}
+      onClearMonumentContext={() => setSelectedMonument(undefined)}
+    />
+  ) : activeItem === "Scan Monument" ? (
     <ScanMonumentFeaturePage />
   ) : activeItem === "Timeline Explorer" ? (
     <TimelineExplorer

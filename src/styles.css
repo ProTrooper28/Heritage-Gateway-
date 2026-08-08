@@ -426,6 +426,140 @@
   25%, 100% { transform: translateX(150%) skewX(-25deg); }
 }
 
+/* ─── AI Historian Chat Styles ──────────────────────────────────────────────── */
+
+/* Markdown prose rendering */
+.ai-markdown {
+  font-family: 'Jost', system-ui, sans-serif;
+  font-size: 0.84rem;
+  line-height: 1.75;
+  color: oklch(0.96 0.012 85 / 0.82);
+}
+
+.ai-markdown p {
+  margin: 0 0 0.75rem 0;
+}
+
+.ai-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-markdown strong {
+  color: oklch(0.96 0.012 85 / 0.95);
+  font-weight: 600;
+}
+
+.ai-markdown em {
+  color: oklch(0.96 0.012 85 / 0.75);
+  font-style: italic;
+}
+
+.ai-markdown ul {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+  list-style: none;
+}
+
+.ai-markdown ul li {
+  position: relative;
+  padding-left: 0.75rem;
+  margin-bottom: 0.35rem;
+  color: oklch(0.96 0.012 85 / 0.78);
+}
+
+.ai-markdown ul li::before {
+  content: "◆";
+  position: absolute;
+  left: -0.5rem;
+  color: oklch(0.79 0.11 82 / 0.55);
+  font-size: 0.45rem;
+  top: 0.35rem;
+}
+
+.ai-h4 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: oklch(0.96 0.012 85 / 0.9);
+  letter-spacing: -0.01em;
+  margin: 1rem 0 0.4rem;
+}
+
+/* Speculative section headers (⚔️ 🌀 🌍) */
+.ai-section-header {
+  font-family: 'Jost', system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: oklch(0.79 0.11 82);
+  text-transform: uppercase;
+  margin: 1.1rem 0 0.45rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid oklch(0.79 0.11 82 / 0.18);
+}
+
+/* "Did You Know?" callout box */
+.ai-did-you-know {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 1.1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, oklch(0.79 0.11 82 / 0.1), oklch(0.79 0.11 82 / 0.04));
+  border: 1px solid oklch(0.79 0.11 82 / 0.28);
+  border-left: 3px solid oklch(0.79 0.11 82 / 0.7);
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: oklch(0.96 0.012 85 / 0.78);
+}
+
+.ai-did-you-know .ai-dyk-icon {
+  font-size: 1rem;
+}
+
+.ai-did-you-know strong {
+  display: block;
+  font-family: 'Jost', system-ui, sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: oklch(0.79 0.11 82);
+  margin-bottom: 0.25rem;
+}
+
+/* Typing indicator dots */
+.ai-typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.2rem 0;
+}
+
+.ai-typing-dots span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(0.79 0.11 82 / 0.65);
+  animation: ai-dot-bounce 1.3s ease-in-out infinite;
+}
+
+.ai-typing-dots span:nth-child(2) {
+  animation-delay: 0.18s;
+  background: oklch(0.79 0.11 82 / 0.5);
+}
+
+.ai-typing-dots span:nth-child(3) {
+  animation-delay: 0.36s;
+  background: oklch(0.79 0.11 82 / 0.35);
+}
+
+@keyframes ai-dot-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
 /* ─── Timeline Explorer Utilities ─────────────────────────────────────────── */
 
 @utility timeline-card {
