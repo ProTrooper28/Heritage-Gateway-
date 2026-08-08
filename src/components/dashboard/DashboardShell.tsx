@@ -6,6 +6,7 @@ import { HomePage } from "./HomePage";
 import { AIHistorian } from "./AIHistorian";
 import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 import { SmartTrailsFeaturePage } from "@/features/smart-trails";
+import { HistoricalReconstructionFeaturePage } from "@/features/historical-reconstruction";
 import { TimelineExplorer } from "./TimelineExplorer";
 import { ExploreHeritagePage } from "../explore/ExploreHeritagePage";
 import { SavedCollectionsPage } from "./SavedCollectionsPage";
@@ -115,6 +116,8 @@ export function DashboardShell() {
       key="timeline-explorer"
       onNavigate={setActiveItem}
     />
+  ) : activeItem === "Historical Reconstruction" ? (
+    <HistoricalReconstructionFeaturePage key="historical-reconstruction" />
   ) : activeItem === "Smart Heritage Trails" ? (
     <SmartTrailsFeaturePage key="smart-trails" onNavigate={setActiveItem} />
   ) : activeItem === "Explore Heritage" ? (

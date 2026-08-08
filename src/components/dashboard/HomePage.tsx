@@ -13,6 +13,7 @@ import {
   History,
   Settings,
   User,
+  type LucideIcon,
 } from "lucide-react";
 import { SpecularButton } from "@/components/ui/SpecularButton";
 import brihadeeswara from "@/assets/brihadeeswara.jpg";
@@ -90,7 +91,7 @@ const FEATURE_CARDS = [
     id: "historical-reconstruction",
     label: "Historical Reconstruction",
     icon: ImagePlay,
-    desc: "See ancient ruins restored to their original glory with AI.",
+    desc: "Step inside interactive 3D reconstructions — rotate the monument, explore its parts and compare past with present.",
   },
   {
     id: "saved-collections",
@@ -622,7 +623,7 @@ function UtilityButton({
   delay,
   onClick,
 }: {
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
   delay: number;
   onClick: () => void;
@@ -868,9 +869,9 @@ const AI_FEATURES = [
   {
     icon: ImagePlay,
     title: "Historical Reconstruction",
-    desc: "Peer through the veil of time. See ruins restored to their original glory with breathtaking AI-generated reconstructions.",
+    desc: "Enter a digital museum. Rotate 3D monuments, tap architectural elements to read their history, and slide between past and present.",
     image: hampi,
-    imageAlt: "Hampi Ruins — Historical Reconstruction",
+    imageAlt: "Hampi Ruins — Historical Reconstruction 3D viewer",
   },
 ];
 
