@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
+import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 
 /**
  * DashboardShell — the main app layout after the cinematic intro.
@@ -67,7 +68,7 @@ export function DashboardShell() {
           zIndex: 40,
         }}
       >
-        <TopBar sidebarCollapsed={sidebarCollapsed} />
+        <TopBar sidebarCollapsed={sidebarCollapsed} onNavigate={setActiveItem} />
       </motion.div>
 
       {/* Main content */}
@@ -83,7 +84,11 @@ export function DashboardShell() {
           transition: "margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-        <HomePage activeItem={activeItem} onNavigate={setActiveItem} />
+        {activeItem === "Scan Monument" ? (
+          <ScanMonumentFeaturePage />
+        ) : (
+          <HomePage activeItem={activeItem} onNavigate={setActiveItem} />
+        )}
       </motion.main>
     </motion.div>
   );
