@@ -21,6 +21,7 @@ import konark from "@/assets/konark.jpg";
 import tajmahal from "@/assets/tajmahal.jpg";
 import qutubminar from "@/assets/qutubminar.jpg";
 import heritageBlend from "@/assets/heritage-blend.jpg";
+import ajanta from "@/assets/ajanta.jpg";
 
 // ─── Shared tokens ────────────────────────────────────────────────────────────
 const GLASS_BORDER = "1px solid oklch(0.79 0.11 82 / 0.14)";
@@ -223,12 +224,13 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              paddingTop: "2rem", // compensate for top bar
             }}
           >
             {/* Inner wrapper — re-enable pointer events just for the content */}
             <motion.div
               style={{ opacity: titleOpacity, y: titleY, pointerEvents: "auto" }}
-              className="relative max-w-5xl text-center px-6"
+              className="relative max-w-5xl text-center px-6 w-full"
             >
               <div
                 aria-hidden="true"
@@ -399,10 +401,11 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="mt-40 border-t border-parchment/10 pt-16 pb-8 text-center"
+              className="mt-40 border-t border-parchment/10 pt-16 pb-8 text-center relative"
             >
-              <h2 className="font-serif text-3xl text-parchment/40 mb-6 italic">History Awaits.</h2>
-              <div className="flex justify-center gap-8 font-sans text-[0.65rem] uppercase tracking-[0.2em] text-parchment/30">
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-transparent -z-10" />
+              <h2 className="font-serif text-3xl text-parchment/70 mb-6 italic drop-shadow-md">History Awaits.</h2>
+              <div className="flex justify-center gap-8 font-sans text-[0.65rem] uppercase tracking-[0.2em] text-parchment/50 drop-shadow-md">
                 <span className="hover:text-gold transition-colors cursor-pointer">Privacy</span>
                 <span className="hover:text-gold transition-colors cursor-pointer">Terms</span>
                 <span className="hover:text-gold transition-colors cursor-pointer">Credits</span>
@@ -745,7 +748,8 @@ function Section3Explore() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        className="flex gap-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-8 pt-4 w-full pr-8"
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         {RECENT.map((m) => (
           <motion.div
@@ -753,7 +757,7 @@ function Section3Explore() {
             variants={cardReveal}
             whileHover={{ y: -8, scale: 1.02 }}
             transition={{ duration: 0.6, ease: EASE }}
-            className="group relative h-[32rem] rounded-2xl overflow-hidden cursor-pointer"
+            className="group relative h-[32rem] shrink-0 snap-center w-[clamp(280px,80vw,500px)] rounded-2xl overflow-hidden cursor-pointer"
             style={{ border: GLASS_BORDER }}
           >
             <img
@@ -790,33 +794,37 @@ function Section4Featured() {
       <SectionLabel>Curated Selections</SectionLabel>
       <SectionTitle>Featured Monuments</SectionTitle>
 
-      <div className="flex gap-6 overflow-x-auto pb-12 pt-4 hide-scrollbar snap-x snap-mandatory">
-        {FEATURED.map((f, i) => (
-          <motion.div
-            key={f.id}
-            initial={{ opacity: 0, x: 100 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8, delay: i * 0.1, ease: EASE }}
-            className="relative shrink-0 w-[clamp(320px,40vw,480px)] h-[28rem] rounded-2xl overflow-hidden snap-center group cursor-pointer"
-          >
-            <img
-              src={f.image}
-              alt={f.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-ink/30 transition-colors duration-500 group-hover:bg-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+      {/* Container allows scrolling without page-level overflow */}
+      <div className="w-full">
+        <div className="flex gap-6 overflow-x-auto pb-12 pt-4 pr-8 hide-scrollbar snap-x snap-mandatory" style={{ WebkitOverflowScrolling: "touch" }}>
+          {FEATURED.map((f, i) => (
+            <motion.div
+              key={f.id}
+              initial={{ opacity: 0, x: 100 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: i * 0.1, ease: EASE }}
+              className="relative shrink-0 w-[clamp(320px,40vw,480px)] h-[28rem] rounded-2xl overflow-hidden snap-center group cursor-pointer"
+            >
+              <img
+                src={f.image}
+                alt={f.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-ink/30 transition-colors duration-500 group-hover:bg-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
 
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h3 className="font-serif text-3xl text-parchment mb-3">{f.title}</h3>
-              <p className="font-sans text-sm text-parchment/70 leading-relaxed max-w-xs">
-                {f.desc}
-              </p>
-            </div>
-          </motion.div>
-        ))}
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <h3 className="font-serif text-3xl text-parchment mb-3">{f.title}</h3>
+                <p className="font-sans text-sm text-parchment/70 leading-relaxed max-w-xs">
+                  {f.desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
+
     </motion.section>
   );
 }
@@ -827,59 +835,88 @@ const AI_FEATURES = [
     icon: Camera,
     title: "AI Monument Scanner",
     desc: "Point your camera at any ancient structure. Our vision models instantly decode its history, architecture, and hidden stories in real-time.",
+    image: konark,
+    imageAlt: "Konark Sun Temple — AI Monument Scanning",
   },
   {
     icon: Bot,
     title: "The AI Historian",
     desc: "A personalized guide powered by centuries of archives. Ask questions, debate interpretations, and converse with history itself.",
+    image: tajmahal,
+    imageAlt: "Taj Mahal — AI Historian",
   },
   {
     icon: Layers,
     title: "Architecture Explorer",
     desc: "Deconstruct monuments layer by layer. Understand the engineering marvels and stylistic evolutions of past dynasties.",
+    image: brihadeeswara,
+    imageAlt: "Brihadeeswara Temple — Architecture Explorer",
   },
   {
     icon: ImagePlay,
     title: "Historical Reconstruction",
     desc: "Peer through the veil of time. See ruins restored to their original glory with breathtaking AI-generated reconstructions.",
+    image: hampi,
+    imageAlt: "Hampi Ruins — Historical Reconstruction",
   },
 ];
 
 function Section5AIFeatures() {
   return (
     <section className="mb-40">
-      <div className="text-center mb-32">
+      <div className="text-center mb-20">
         <SectionLabel>Capabilities</SectionLabel>
-        <SectionTitle>Empowered by AI</SectionTitle>
+        <SectionTitle>Discover Our Features</SectionTitle>
       </div>
 
-      <div className="space-y-48">
+      <div className="space-y-32">
         {AI_FEATURES.map((feat, i) => (
           <motion.div
             key={feat.title}
-            initial={{ opacity: 0, y: 100 }}
+            initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-20%" }}
+            viewport={{ once: true, margin: "-15%" }}
             transition={{ duration: 1, ease: EASE }}
-            className={`flex flex-col gap-12 items-center ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
+            className={`flex flex-col gap-10 items-center ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
           >
-            <div className="w-full md:w-1/2 aspect-square max-h-[500px] rounded-[2.5rem] bg-ink/50 border border-parchment/5 flex items-center justify-center relative overflow-hidden group">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.79_0.11_82/0.1),transparent)] opacity-0 transition-opacity duration-1000 group-hover:opacity-100" />
-              <feat.icon
-                size={80}
-                className="text-gold/20 transition-transform duration-1000 group-hover:scale-110 group-hover:text-gold/40"
-                strokeWidth={1}
+            {/* Monument image panel */}
+            <div
+              className="w-full md:w-1/2 rounded-[2rem] overflow-hidden relative group"
+              style={{
+                aspectRatio: "4/3",
+                maxHeight: "420px",
+                border: GLASS_BORDER,
+                boxShadow: "0 24px 60px -20px oklch(0 0 0 / 0.7)",
+              }}
+            >
+              <img
+                src={feat.image}
+                alt={feat.imageAlt}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                style={{ filter: "saturate(0.85) brightness(0.8) contrast(1.08)" }}
               />
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+              {/* Icon badge */}
+              <div
+                className="absolute top-6 left-6 flex items-center justify-center w-11 h-11 rounded-xl border border-gold/30 text-gold"
+                style={{ background: "oklch(0.08 0.005 60 / 0.75)", backdropFilter: "blur(12px)" }}
+              >
+                <feat.icon size={18} strokeWidth={1.5} />
+              </div>
             </div>
 
-            <div className="w-full md:w-1/2 p-8 md:p-16">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-gold/20 text-gold mb-8">
+            <div className="w-full md:w-1/2 p-8 md:p-12 relative">
+              {/* Elegant dark overlay behind text to improve contrast against bright background images */}
+              <div className="absolute inset-0 bg-gradient-to-br from-ink/90 via-ink/50 to-transparent backdrop-blur-md rounded-[2.5rem] -z-10 border border-gold/5" />
+              
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-gold/20 text-gold mb-8 bg-ink/40">
                 <feat.icon size={18} />
               </div>
-              <h3 className="font-serif text-4xl text-parchment mb-6 tracking-tight leading-tight">
+              <h3 className="font-serif text-4xl text-parchment mb-6 tracking-tight leading-tight drop-shadow-lg">
                 {feat.title}
               </h3>
-              <p className="font-sans text-lg text-parchment/60 leading-relaxed max-w-md font-light">
+              <p className="font-sans text-lg text-parchment/80 leading-relaxed max-w-md font-light drop-shadow-md">
                 {feat.desc}
               </p>
             </div>
@@ -892,12 +929,36 @@ function Section5AIFeatures() {
 
 // ─── Section 6: Collections ───────────────────────────────────────────────────
 const COLLECTIONS = [
-  "UNESCO World Heritage",
-  "Chola Temples",
-  "Mughal Architecture",
-  "Rajput Forts",
-  "Lost Cities",
-  "Buddhist Caves",
+  {
+    title: "UNESCO World Heritage",
+    image: tajmahal,
+    subtitle: "7 iconic Indian sites",
+  },
+  {
+    title: "Chola Temples",
+    image: brihadeeswara,
+    subtitle: "Dravidian architecture",
+  },
+  {
+    title: "Mughal Architecture",
+    image: qutubminar,
+    subtitle: "Indo-Islamic splendour",
+  },
+  {
+    title: "Rajput Forts",
+    image: heritageBlend,
+    subtitle: "Fortresses of valour",
+  },
+  {
+    title: "Lost Cities",
+    image: hampi,
+    subtitle: "Vijayanagara & beyond",
+  },
+  {
+    title: "Buddhist Caves",
+    image: ajanta,
+    subtitle: "Rock-cut sanctuaries",
+  },
 ];
 
 function Section6Collections() {
@@ -912,17 +973,38 @@ function Section6Collections() {
       <SectionLabel>Curations</SectionLabel>
       <SectionTitle>Thematic Collections</SectionTitle>
 
-      <div className="flex gap-4 overflow-x-auto pb-8 hide-scrollbar">
-        {COLLECTIONS.map((c) => (
-          <motion.div
-            key={c}
-            whileHover={{ scale: 1.03 }}
-            className="shrink-0 w-64 h-80 rounded-2xl border border-parchment/10 bg-ink flex items-end p-6 cursor-pointer relative overflow-hidden group"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <h3 className="font-serif text-2xl text-parchment relative z-10">{c}</h3>
-          </motion.div>
-        ))}
+      {/* Grid container with exactly 3 visible cards, no horizontal scrolling */}
+      <div className="w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {COLLECTIONS.slice(0, 3).map((c) => (
+            <motion.div
+              key={c.title}
+              whileHover={{ scale: 1.04, y: -6 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="w-full h-80 rounded-2xl cursor-pointer relative overflow-hidden group"
+              style={{ border: GLASS_BORDER, boxShadow: "0 8px 32px oklch(0 0 0 / 0.5)" }}
+            >
+              {/* Background monument image */}
+              <img
+                src={c.image}
+                alt={c.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                style={{ filter: "saturate(0.7) brightness(0.65) contrast(1.1)" }}
+              />
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-transparent" />
+              {/* Hover glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              {/* Top gold shimmer line */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              {/* Content */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                <p className="font-sans text-[0.6rem] uppercase tracking-[0.22em] text-gold/80 mb-2 drop-shadow-md">{c.subtitle}</p>
+                <h3 className="font-serif text-xl text-parchment leading-snug drop-shadow-md">{c.title}</h3>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </motion.section>
   );
