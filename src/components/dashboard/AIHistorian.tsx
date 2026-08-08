@@ -344,7 +344,7 @@ function EmptyState({ onPrompt }: { onPrompt: (p: string) => void }) {
           marginBottom: "0.5rem",
         }}
       >
-        Heritage AI Historian
+        Heritage Gateway Historian
       </h3>
       <p
         style={{
@@ -618,7 +618,7 @@ export function AIHistorian({
                 marginBottom: "0.15rem",
               }}
             >
-              Heritage AI
+              Heritage Gateway
             </p>
             <h2
               style={{

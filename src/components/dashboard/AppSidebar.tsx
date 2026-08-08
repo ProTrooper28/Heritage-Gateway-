@@ -255,7 +255,7 @@ export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: Side
               >
                 Heritage{" "}
                 <span style={{ color: "oklch(0.79 0.11 82)", fontStyle: "normal" }}>
-                  AI
+                  Gateway
                 </span>
               </span>
             </motion.div>

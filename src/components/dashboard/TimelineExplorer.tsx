@@ -555,7 +555,7 @@ function TimelineHeader({
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.25rem", gap: "1rem", flexWrap: "wrap" }}>
         <div>
           <p style={{ fontFamily: "'Jost', system-ui, sans-serif", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: "0.4em", color: "oklch(0.79 0.11 82 / 0.7)", marginBottom: "0.35rem" }}>
-            Heritage AI — Interactive History
+            Heritage Gateway — Interactive History
           </p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 300, color: "oklch(0.96 0.012 85)", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
             Journey Through{" "}<span style={{ color: "oklch(0.79 0.11 82)" }}>Time</span>

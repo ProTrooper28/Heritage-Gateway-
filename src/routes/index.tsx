@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "A cinematic journey through India's iconic monuments, brought together in Heritage Gateway.",
+          "A cinematic journey through India's iconic monuments, brought together in Heritage Gateway."
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
 //
 //  "slides"    → pre-login cinematic slideshow
 //  "login"     → login card is shown
-//  "dashboard" → main Heritage AI dashboard
+//  "dashboard" → main Heritage Gateway dashboard
 //
 type AppState = "slides" | "login" | "dashboard";
 
@@ -221,7 +221,7 @@ function LoginScene({
               </label>
               <input
                 type="email"
-                placeholder="scholar@heritage.ai"
+                placeholder="scholar@heritagegateway.ai"
                 className="heritage-input"
                 required
               />

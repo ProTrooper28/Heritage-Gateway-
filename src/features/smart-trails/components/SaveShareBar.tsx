@@ -40,7 +40,7 @@ export function SaveShareBar({ trail }: { trail: SmartTrail }) {
   }
 
   async function share() {
-    const text = `${trail.title}\n${trail.stops.length} stops · ${trail.city}, ${trail.state}\nPlan it yourself on Heritage AI:`;
+    const text = `${trail.title}\n${trail.stops.length} stops · ${trail.city}, ${trail.state}\nPlan it yourself on Heritage Gateway:`;
     try {
       if (navigator.share) {
         await navigator.share({ title: trail.title, text });

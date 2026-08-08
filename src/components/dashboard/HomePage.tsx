@@ -350,7 +350,7 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
                   marginBottom: "0.6rem",
                 }}
               >
-                Heritage AI — Your Gateway
+                Heritage Gateway — Your Gateway
               </p>
               <h2
                 style={{

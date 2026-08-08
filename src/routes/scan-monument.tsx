@@ -8,7 +8,7 @@ import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 export const Route = createFileRoute("/scan-monument")({
   head: () => ({
     meta: [
-      { title: "Scan Monument — Indian Heritage AI" },
+      { title: "Scan Monument — Heritage Gateway" },
       { name: "description", content: "Identify Indian monuments with AI-powered vision." },
     ],
   }),

@@ -109,7 +109,7 @@ export function SettingsPage() {
           <SettingsRow 
             icon={<Info />} 
             title="Application Info" 
-            description="Heritage AI - Demo Build"
+            description="Heritage Gateway - Demo Build"
           >
             <div className="text-right">
               <div className="font-sans text-sm text-parchment/80">Version 1.0.0</div>

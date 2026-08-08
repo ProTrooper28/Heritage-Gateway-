@@ -27,7 +27,7 @@ export function HeroLanding({ onExplore }: Props) {
           <a href="#" className="hover:text-white transition-colors">Rituals & Religion</a>
         </div>
         <div className="absolute left-1/2 -translate-x-1/2 font-serif text-[1.1rem] capitalize tracking-normal text-white">
-          Indian Heritage AI
+          Heritage Gateway
         </div>
         <div className="flex gap-8">
           <a href="#" className="hover:text-white transition-colors">Warfare & Honor</a>
