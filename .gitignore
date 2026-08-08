@@ -14,11 +14,18 @@ dist-ssr
 .vinxi
 .tanstack/**
 .nitro
+.env
+.env.*
 *.local
 
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+
+# Environment variables — never commit secrets
+.env
+.env.local
+.env.*.local
 
 # Editor directories and files
 .vscode/*

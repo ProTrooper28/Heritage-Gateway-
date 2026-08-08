@@ -4,9 +4,10 @@ import { Bell, Search, Scan, ChevronDown } from "lucide-react";
 
 type Props = {
   sidebarCollapsed: boolean;
+  onNavigate?: (label: string) => void;
 };
 
-export function TopBar({ sidebarCollapsed }: Props) {
+export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [notifHovered, setNotifHovered] = useState(false);
 
@@ -105,6 +106,7 @@ export function TopBar({ sidebarCollapsed }: Props) {
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
+        onClick={() => onNavigate?.("Scan Monument")}
         style={{
           display: "flex",
           alignItems: "center",
