@@ -1,18 +1,30 @@
 import { useState } from "react";
+import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Bell, Search, Scan, ChevronDown } from "lucide-react";
 
 type Props = {
   sidebarCollapsed: boolean;
-  onNavigate?: (label: string) => void;
 };
 
-export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
+const NAV_LINKS = [
+  { label: "Home", to: "/home" },
+  { label: "Monuments", to: "/monuments" },
+  { label: "Explore", to: "/explore" },
+  { label: "Reconstruction", to: "/historical-reconstruction" },
+  { label: "About", to: "/about" },
+];
+
+export function TopBar({ sidebarCollapsed }: Props) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [notifHovered, setNotifHovered] = useState(false);
+  const { pathname } = useLocation();
 
   const sidebarWidth = sidebarCollapsed ? "4.25rem" : "15rem";
   const left = `calc(${sidebarWidth} + 2rem)`;
+
+  const isActive = (to: string) =>
+    pathname === to || (to === "/monuments" && pathname.startsWith("/monuments/"));
 
   return (
     <motion.header
@@ -28,8 +40,8 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
         height: "3.5rem",
         display: "flex",
         alignItems: "center",
-        gap: "0.75rem",
-        padding: "0 1rem 0 1.25rem",
+        gap: "0.5rem",
+        padding: "0 0.75rem 0 1.25rem",
         borderRadius: "1rem",
         // dark glass
         background:
@@ -44,7 +56,6 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
       {/* Search */}
       <div
         style={{
-          flex: 1,
           display: "flex",
           alignItems: "center",
           gap: "0.5rem",
@@ -56,7 +67,9 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
             : "oklch(0.96 0.012 85 / 0.04)",
           border: `1px solid ${searchFocused ? "oklch(0.79 0.11 82 / 0.3)" : "oklch(0.96 0.012 85 / 0.08)"}`,
           transition: "all 0.25s",
-          maxWidth: "32rem",
+          maxWidth: "18rem",
+          width: "100%",
+          flexShrink: 1,
         }}
       >
         <Search
@@ -99,37 +112,61 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
         </span>
       </div>
 
+      {/* Primary nav — real routes with active state */}
+      <nav className="hidden lg:flex items-center gap-0.5">
+        {NAV_LINKS.map((link) => (
+          <Link
+            key={link.to}
+            to={link.to}
+            className={`relative rounded-lg px-3 py-1.5 font-sans text-[0.72rem] uppercase tracking-[0.16em] transition-colors ${
+              isActive(link.to) ? "text-gold" : "text-parchment/60 hover:text-gold"
+            }`}
+          >
+            {link.label}
+            {isActive(link.to) && (
+              <span
+                className="absolute inset-x-3 -bottom-px h-px rounded-full bg-gold/70"
+                style={{ boxShadow: "0 0 8px oklch(0.79 0.11 82 / 0.5)" }}
+              />
+            )}
+          </Link>
+        ))}
+      </nav>
+
       {/* Spacer */}
       <div style={{ flex: 1 }} />
 
       {/* Quick Scan CTA */}
-      <motion.button
+      <motion.span
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        onClick={() => onNavigate?.("Scan Monument")}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.45rem",
-          padding: "0.45rem 1rem",
-          borderRadius: "0.65rem",
-          border: "1px solid oklch(0.79 0.11 82 / 0.4)",
-          background:
-            "linear-gradient(135deg, oklch(0.79 0.11 82 / 0.18), oklch(0.79 0.11 82 / 0.06))",
-          color: "oklch(0.79 0.11 82)",
-          cursor: "pointer",
-          fontFamily: "'Jost', system-ui, sans-serif",
-          fontSize: "0.72rem",
-          textTransform: "uppercase",
-          letterSpacing: "0.2em",
-          fontWeight: 500,
-          boxShadow: "0 0 20px oklch(0.79 0.11 82 / 0.08)",
-          flexShrink: 0,
-        }}
+        style={{ display: "inline-flex", flexShrink: 0 }}
       >
-        <Scan size={13} />
-        Quick Scan
-      </motion.button>
+        <Link
+          to="/scan-monument"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.45rem",
+            padding: "0.45rem 1rem",
+            borderRadius: "0.65rem",
+            border: "1px solid oklch(0.79 0.11 82 / 0.4)",
+            background:
+              "linear-gradient(135deg, oklch(0.79 0.11 82 / 0.18), oklch(0.79 0.11 82 / 0.06))",
+            color: "oklch(0.79 0.11 82)",
+            textDecoration: "none",
+            fontFamily: "'Jost', system-ui, sans-serif",
+            fontSize: "0.72rem",
+            textTransform: "uppercase",
+            letterSpacing: "0.2em",
+            fontWeight: 500,
+            boxShadow: "0 0 20px oklch(0.79 0.11 82 / 0.08)",
+          }}
+        >
+          <Scan size={13} />
+          Quick Scan
+        </Link>
+      </motion.span>
 
       {/* Notification bell */}
       <button
@@ -170,7 +207,9 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
       </button>
 
       {/* Profile avatar */}
-      <button
+      <Link
+        to="/profile"
+        title="Profile"
         style={{
           display: "flex",
           alignItems: "center",
@@ -179,7 +218,7 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
           borderRadius: "0.75rem",
           border: "1px solid oklch(0.96 0.012 85 / 0.1)",
           background: "oklch(0.96 0.012 85 / 0.04)",
-          cursor: "pointer",
+          textDecoration: "none",
           transition: "all 0.2s",
           flexShrink: 0,
         }}
@@ -205,7 +244,7 @@ export function TopBar({ sidebarCollapsed, onNavigate }: Props) {
           U
         </div>
         <ChevronDown size={12} style={{ color: "oklch(0.96 0.012 85 / 0.4)" }} />
-      </button>
+      </Link>
     </motion.header>
   );
 }

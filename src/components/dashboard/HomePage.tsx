@@ -10,11 +10,9 @@ import {
   Landmark,
   BookMarked,
   Heart,
-  History,
-  Settings,
-  User,
   type LucideIcon,
 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { SpecularButton } from "@/components/ui/SpecularButton";
 import brihadeeswara from "@/assets/brihadeeswara.jpg";
 import hampi from "@/assets/hampi.jpg";
@@ -56,65 +54,84 @@ const cardReveal = {
 };
 
 // ─── Feature card definitions ─────────────────────────────────────────────────
-const FEATURE_CARDS = [
+type FeatureRoute =
+  | "/scan-monument"
+  | "/explore"
+  | "/ai-historian"
+  | "/smart-trails"
+  | "/timeline"
+  | "/historical-reconstruction"
+  | "/saved-collections"
+  | "/favorites";
+
+const FEATURE_CARDS: {
+  id: string;
+  label: string;
+  to: FeatureRoute;
+  icon: LucideIcon;
+  desc: string;
+}[] = [
   {
     id: "scan-monument",
     label: "Scan Monument",
+    to: "/scan-monument",
     icon: Camera,
     desc: "Point your camera at any structure to instantly decode its history.",
   },
   {
     id: "explore-heritage",
     label: "Explore Heritage",
+    to: "/explore",
     icon: Landmark,
     desc: "Journey through India's most iconic cultural landmarks.",
   },
   {
     id: "ai-historian",
     label: "AI Historian",
+    to: "/ai-historian",
     icon: Bot,
     desc: "Converse with a personalized guide powered by centuries of archives.",
   },
   {
     id: "smart-trails",
     label: "Smart Heritage Trails",
+    to: "/smart-trails",
     icon: Sparkles,
     desc: "Personal heritage journeys curated to your time and interests.",
   },
   {
     id: "timeline-explorer",
     label: "Timeline Explorer",
+    to: "/timeline",
     icon: Clock,
     desc: "Navigate India's history along an immersive interactive timeline.",
   },
   {
     id: "historical-reconstruction",
     label: "Historical Reconstruction",
+    to: "/historical-reconstruction",
     icon: ImagePlay,
     desc: "Step inside interactive 3D reconstructions — rotate the monument, explore its parts and compare past with present.",
   },
   {
     id: "saved-collections",
     label: "Saved Collections",
+    to: "/saved-collections",
     icon: BookMarked,
     desc: "Revisit your curated collections of monuments and discoveries.",
   },
   {
     id: "favorites",
     label: "Favorites",
+    to: "/favorites",
     icon: Heart,
     desc: "Your personally starred monuments, always one tap away.",
   },
 ];
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-type HomePageProps = {
-  activeItem: string;
-  onNavigate: (label: string) => void;
-};
-
 // ─── Main Component ───────────────────────────────────────────────────────────
-export function HomePage({ activeItem, onNavigate }: HomePageProps) {
+export function HomePage() {
+  const navigate = useNavigate();
   // ══════════════════════════════════════════════════════════════════════════
   //  isLanding = true  → show cinematic hero + "Begin Journey" button
   //  isLanding = false → show application menu (feature cards)
@@ -134,7 +151,6 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
   // ── Handler: Begin Journey click ──────────────────────────────────────────
   function handleBeginJourney() {
     setIsLanding(false);
-    onNavigate("Home");
   }
 
   return (
@@ -330,9 +346,6 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
             transition={{ duration: 0.45, ease: EASE }}
             style={{ position: "relative", zIndex: 10, minHeight: "100vh", paddingTop: "5rem" }}
           >
-            {/* Compact top-right utility bar */}
-            <UtilityBar onNavigate={onNavigate} />
-
             {/* Section header */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
@@ -385,8 +398,8 @@ export function HomePage({ activeItem, onNavigate }: HomePageProps) {
                 <FeatureCard
                   key={card.id}
                   card={card}
-                  isActive={activeItem === card.label}
-                  onClick={() => onNavigate(card.label)}
+                  isActive={false}
+                  onClick={() => navigate({ to: card.to })}
                 />
               ))}
             </motion.div>
@@ -569,138 +582,6 @@ function FeatureCard({
         </p>
       </div>
     </motion.button>
-  );
-}
-
-// ─── Utility Bar ──────────────────────────────────────────────────────────────
-
-const UTILITY_BUTTONS = [
-  { icon: History, label: "Recent Activity", navLabel: "Recent Activity" },
-  { icon: Settings, label: "Settings", navLabel: "Settings" },
-  { icon: User, label: "Profile", navLabel: "Profile" },
-];
-
-function UtilityBar({ onNavigate }: { onNavigate: (label: string) => void }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -12, scale: 0.92 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, delay: 0.3, ease: EASE }}
-      style={{
-        position: "fixed",
-        top: "1.15rem",
-        right: "1.25rem",
-        zIndex: 60,
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        padding: "0.45rem 0.65rem",
-        borderRadius: "2rem",
-        background:
-          "linear-gradient(135deg, oklch(0.96 0.012 85 / 0.08), oklch(0.13 0.008 60 / 0.9))",
-        backdropFilter: "blur(28px) saturate(150%)",
-        border: "1px solid oklch(0.79 0.11 82 / 0.2)",
-        boxShadow:
-          "0 16px 48px -12px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(0.96 0.012 85 / 0.1)",
-      }}
-    >
-      {UTILITY_BUTTONS.map(({ icon: Icon, label, navLabel }, i) => (
-        <UtilityButton
-          key={label}
-          icon={Icon}
-          label={label}
-          delay={0.35 + i * 0.06}
-          onClick={() => onNavigate(navLabel)}
-        />
-      ))}
-    </motion.div>
-  );
-}
-
-function UtilityButton({
-  icon: Icon,
-  label,
-  delay,
-  onClick,
-}: {
-  icon: LucideIcon;
-  label: string;
-  delay: number;
-  onClick: () => void;
-}) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div style={{ position: "relative" }}>
-      <motion.button
-        initial={{ opacity: 0, scale: 0.6 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.35, delay, ease: EASE }}
-        whileHover={{ scale: 1.14 }}
-        whileTap={{ scale: 0.9 }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onClick={onClick}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "2.2rem",
-          height: "2.2rem",
-          borderRadius: "50%",
-          border: hovered
-            ? "1px solid oklch(0.79 0.11 82 / 0.5)"
-            : "1px solid oklch(0.96 0.012 85 / 0.12)",
-          background: hovered
-            ? "linear-gradient(135deg, oklch(0.79 0.11 82 / 0.18), oklch(0.79 0.11 82 / 0.06))"
-            : "oklch(0.96 0.012 85 / 0.05)",
-          color: hovered
-            ? "oklch(0.79 0.11 82)"
-            : "oklch(0.96 0.012 85 / 0.5)",
-          cursor: "pointer",
-          boxShadow: hovered
-            ? "0 0 18px oklch(0.79 0.11 82 / 0.35), 0 4px 12px oklch(0 0 0 / 0.3)"
-            : "none",
-          transition: "all 0.22s ease",
-        }}
-      >
-        <Icon size={14} strokeWidth={1.75} />
-      </motion.button>
-
-      {/* Tooltip */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.88 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 6, scale: 0.88 }}
-            transition={{ duration: 0.16, ease: EASE }}
-            style={{
-              position: "absolute",
-              top: "calc(100% + 0.5rem)",
-              left: "50%",
-              transform: "translateX(-50%)",
-              whiteSpace: "nowrap",
-              padding: "0.3rem 0.65rem",
-              borderRadius: "0.45rem",
-              background:
-                "linear-gradient(135deg, oklch(0.96 0.012 85 / 0.1), oklch(0.13 0.008 60 / 0.92))",
-              backdropFilter: "blur(16px)",
-              border: "1px solid oklch(0.79 0.11 82 / 0.2)",
-              fontFamily: "'Jost', system-ui, sans-serif",
-              fontSize: "0.62rem",
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
-              color: "oklch(0.96 0.012 85 / 0.75)",
-              boxShadow: "0 4px 16px oklch(0 0 0 / 0.4)",
-              pointerEvents: "none",
-            }}
-          >
-            {label}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
   );
 }
 

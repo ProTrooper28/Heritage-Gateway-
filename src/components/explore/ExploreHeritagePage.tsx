@@ -1,12 +1,16 @@
-import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { ExploreHomeView } from "./ExploreHomeView";
-import { MonumentDetailPage } from "./MonumentDetailPage";
-import { Monument } from "./data/monuments";
+import { slugify, type Monument } from "./data/monuments";
 import { useUserState } from "../../context/UserStateContext";
 
+/**
+ * ExploreHeritagePage — the Explore home. Selecting a monument now navigates
+ * to the real /monuments/:id route instead of swapping content inline, so the
+ * URL changes and browser back/forward work naturally.
+ */
 export function ExploreHeritagePage() {
-  const [selectedMonument, setSelectedMonument] = useState<Monument | null>(null);
+  const navigate = useNavigate();
   const { addActivity, incrementStat } = useUserState();
 
   useEffect(() => {
@@ -15,23 +19,9 @@ export function ExploreHeritagePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div className="relative min-h-screen">
-      <AnimatePresence mode="wait">
-        {selectedMonument ? (
-          <MonumentDetailPage 
-            key="detail"
-            monument={selectedMonument} 
-            onBack={() => setSelectedMonument(null)} 
-            onSelectMonument={setSelectedMonument}
-          />
-        ) : (
-          <ExploreHomeView 
-            key="home"
-            onSelectMonument={setSelectedMonument} 
-          />
-        )}
-      </AnimatePresence>
-    </div>
-  );
+  const handleSelect = (monument: Monument) => {
+    navigate({ to: "/monuments/$id", params: { id: slugify(monument.name) } });
+  };
+
+  return <ExploreHomeView onSelectMonument={handleSelect} />;
 }

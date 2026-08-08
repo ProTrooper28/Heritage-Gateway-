@@ -10,43 +10,278 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ScanMonumentRouteImport } from './routes/scan-monument'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as R404RouteImport } from './routes/404'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AppAboutRouteImport } from './routes/_app.about'
+import { Route as AppAiHistorianRouteImport } from './routes/_app.ai-historian'
+import { Route as AppExploreRouteImport } from './routes/_app.explore'
+import { Route as AppFavoritesRouteImport } from './routes/_app.favorites'
+import { Route as AppHistoricalReconstructionRouteImport } from './routes/_app.historical-reconstruction'
+import { Route as AppHomeRouteImport } from './routes/_app.home'
+import { Route as AppMonumentsRouteImport } from './routes/_app.monuments'
+import { Route as AppProfileRouteImport } from './routes/_app.profile'
+import { Route as AppRecentActivityRouteImport } from './routes/_app.recent-activity'
+import { Route as AppSavedCollectionsRouteImport } from './routes/_app.saved-collections'
+import { Route as AppScanMonumentRouteImport } from './routes/_app.scan-monument'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppSmartTrailsRouteImport } from './routes/_app.smart-trails'
+import { Route as AppTimelineRouteImport } from './routes/_app.timeline'
+import { Route as AppMonumentsIdRouteImport } from './routes/_app.monuments.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ScanMonumentRoute = ScanMonumentRouteImport.update({
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppAboutRoute = AppAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiHistorianRoute = AppAiHistorianRouteImport.update({
+  id: '/ai-historian',
+  path: '/ai-historian',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppExploreRoute = AppExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFavoritesRoute = AppFavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppHistoricalReconstructionRoute =
+  AppHistoricalReconstructionRouteImport.update({
+    id: '/historical-reconstruction',
+    path: '/historical-reconstruction',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppHomeRoute = AppHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMonumentsRoute = AppMonumentsRouteImport.update({
+  id: '/monuments',
+  path: '/monuments',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRecentActivityRoute = AppRecentActivityRouteImport.update({
+  id: '/recent-activity',
+  path: '/recent-activity',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSavedCollectionsRoute = AppSavedCollectionsRouteImport.update({
+  id: '/saved-collections',
+  path: '/saved-collections',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppScanMonumentRoute = AppScanMonumentRouteImport.update({
   id: '/scan-monument',
   path: '/scan-monument',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSmartTrailsRoute = AppSmartTrailsRouteImport.update({
+  id: '/smart-trails',
+  path: '/smart-trails',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTimelineRoute = AppTimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMonumentsIdRoute = AppMonumentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppMonumentsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/scan-monument': typeof ScanMonumentRoute
+  '/$': typeof SplatRoute
+  '/404': typeof R404Route
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/about': typeof AppAboutRoute
+  '/ai-historian': typeof AppAiHistorianRoute
+  '/explore': typeof AppExploreRoute
+  '/favorites': typeof AppFavoritesRoute
+  '/historical-reconstruction': typeof AppHistoricalReconstructionRoute
+  '/home': typeof AppHomeRoute
+  '/monuments': typeof AppMonumentsRouteWithChildren
+  '/profile': typeof AppProfileRoute
+  '/recent-activity': typeof AppRecentActivityRoute
+  '/saved-collections': typeof AppSavedCollectionsRoute
+  '/scan-monument': typeof AppScanMonumentRoute
+  '/settings': typeof AppSettingsRoute
+  '/smart-trails': typeof AppSmartTrailsRoute
+  '/timeline': typeof AppTimelineRoute
+  '/monuments/$id': typeof AppMonumentsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/scan-monument': typeof ScanMonumentRoute
+  '/$': typeof SplatRoute
+  '/404': typeof R404Route
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/about': typeof AppAboutRoute
+  '/ai-historian': typeof AppAiHistorianRoute
+  '/explore': typeof AppExploreRoute
+  '/favorites': typeof AppFavoritesRoute
+  '/historical-reconstruction': typeof AppHistoricalReconstructionRoute
+  '/home': typeof AppHomeRoute
+  '/monuments': typeof AppMonumentsRouteWithChildren
+  '/profile': typeof AppProfileRoute
+  '/recent-activity': typeof AppRecentActivityRoute
+  '/saved-collections': typeof AppSavedCollectionsRoute
+  '/scan-monument': typeof AppScanMonumentRoute
+  '/settings': typeof AppSettingsRoute
+  '/smart-trails': typeof AppSmartTrailsRoute
+  '/timeline': typeof AppTimelineRoute
+  '/monuments/$id': typeof AppMonumentsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/scan-monument': typeof ScanMonumentRoute
+  '/$': typeof SplatRoute
+  '/404': typeof R404Route
+  '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/_app/about': typeof AppAboutRoute
+  '/_app/ai-historian': typeof AppAiHistorianRoute
+  '/_app/explore': typeof AppExploreRoute
+  '/_app/favorites': typeof AppFavoritesRoute
+  '/_app/historical-reconstruction': typeof AppHistoricalReconstructionRoute
+  '/_app/home': typeof AppHomeRoute
+  '/_app/monuments': typeof AppMonumentsRouteWithChildren
+  '/_app/profile': typeof AppProfileRoute
+  '/_app/recent-activity': typeof AppRecentActivityRoute
+  '/_app/saved-collections': typeof AppSavedCollectionsRoute
+  '/_app/scan-monument': typeof AppScanMonumentRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/smart-trails': typeof AppSmartTrailsRoute
+  '/_app/timeline': typeof AppTimelineRoute
+  '/_app/monuments/$id': typeof AppMonumentsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/scan-monument'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/404'
+    | '/login'
+    | '/signup'
+    | '/about'
+    | '/ai-historian'
+    | '/explore'
+    | '/favorites'
+    | '/historical-reconstruction'
+    | '/home'
+    | '/monuments'
+    | '/profile'
+    | '/recent-activity'
+    | '/saved-collections'
+    | '/scan-monument'
+    | '/settings'
+    | '/smart-trails'
+    | '/timeline'
+    | '/monuments/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/scan-monument'
-  id: '__root__' | '/' | '/scan-monument'
+  to:
+    | '/'
+    | '/$'
+    | '/404'
+    | '/login'
+    | '/signup'
+    | '/about'
+    | '/ai-historian'
+    | '/explore'
+    | '/favorites'
+    | '/historical-reconstruction'
+    | '/home'
+    | '/monuments'
+    | '/profile'
+    | '/recent-activity'
+    | '/saved-collections'
+    | '/scan-monument'
+    | '/settings'
+    | '/smart-trails'
+    | '/timeline'
+    | '/monuments/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/$'
+    | '/404'
+    | '/_app'
+    | '/login'
+    | '/signup'
+    | '/_app/about'
+    | '/_app/ai-historian'
+    | '/_app/explore'
+    | '/_app/favorites'
+    | '/_app/historical-reconstruction'
+    | '/_app/home'
+    | '/_app/monuments'
+    | '/_app/profile'
+    | '/_app/recent-activity'
+    | '/_app/saved-collections'
+    | '/_app/scan-monument'
+    | '/_app/settings'
+    | '/_app/smart-trails'
+    | '/_app/timeline'
+    | '/_app/monuments/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ScanMonumentRoute: typeof ScanMonumentRoute
+  SplatRoute: typeof SplatRoute
+  R404Route: typeof R404Route
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,19 +293,204 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/scan-monument': {
-      id: '/scan-monument'
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/about': {
+      id: '/_app/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AppAboutRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ai-historian': {
+      id: '/_app/ai-historian'
+      path: '/ai-historian'
+      fullPath: '/ai-historian'
+      preLoaderRoute: typeof AppAiHistorianRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/explore': {
+      id: '/_app/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof AppExploreRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/favorites': {
+      id: '/_app/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof AppFavoritesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/historical-reconstruction': {
+      id: '/_app/historical-reconstruction'
+      path: '/historical-reconstruction'
+      fullPath: '/historical-reconstruction'
+      preLoaderRoute: typeof AppHistoricalReconstructionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/home': {
+      id: '/_app/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AppHomeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/monuments': {
+      id: '/_app/monuments'
+      path: '/monuments'
+      fullPath: '/monuments'
+      preLoaderRoute: typeof AppMonumentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/recent-activity': {
+      id: '/_app/recent-activity'
+      path: '/recent-activity'
+      fullPath: '/recent-activity'
+      preLoaderRoute: typeof AppRecentActivityRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/saved-collections': {
+      id: '/_app/saved-collections'
+      path: '/saved-collections'
+      fullPath: '/saved-collections'
+      preLoaderRoute: typeof AppSavedCollectionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/scan-monument': {
+      id: '/_app/scan-monument'
       path: '/scan-monument'
       fullPath: '/scan-monument'
-      preLoaderRoute: typeof ScanMonumentRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppScanMonumentRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/smart-trails': {
+      id: '/_app/smart-trails'
+      path: '/smart-trails'
+      fullPath: '/smart-trails'
+      preLoaderRoute: typeof AppSmartTrailsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/timeline': {
+      id: '/_app/timeline'
+      path: '/timeline'
+      fullPath: '/timeline'
+      preLoaderRoute: typeof AppTimelineRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/monuments/$id': {
+      id: '/_app/monuments/$id'
+      path: '/$id'
+      fullPath: '/monuments/$id'
+      preLoaderRoute: typeof AppMonumentsIdRouteImport
+      parentRoute: typeof AppMonumentsRoute
     }
   }
 }
 
+interface AppMonumentsRouteChildren {
+  AppMonumentsIdRoute: typeof AppMonumentsIdRoute
+}
+
+const AppMonumentsRouteChildren: AppMonumentsRouteChildren = {
+  AppMonumentsIdRoute: AppMonumentsIdRoute,
+}
+
+const AppMonumentsRouteWithChildren = AppMonumentsRoute._addFileChildren(
+  AppMonumentsRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppAboutRoute: typeof AppAboutRoute
+  AppAiHistorianRoute: typeof AppAiHistorianRoute
+  AppExploreRoute: typeof AppExploreRoute
+  AppFavoritesRoute: typeof AppFavoritesRoute
+  AppHistoricalReconstructionRoute: typeof AppHistoricalReconstructionRoute
+  AppHomeRoute: typeof AppHomeRoute
+  AppMonumentsRoute: typeof AppMonumentsRouteWithChildren
+  AppProfileRoute: typeof AppProfileRoute
+  AppRecentActivityRoute: typeof AppRecentActivityRoute
+  AppSavedCollectionsRoute: typeof AppSavedCollectionsRoute
+  AppScanMonumentRoute: typeof AppScanMonumentRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppSmartTrailsRoute: typeof AppSmartTrailsRoute
+  AppTimelineRoute: typeof AppTimelineRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAboutRoute: AppAboutRoute,
+  AppAiHistorianRoute: AppAiHistorianRoute,
+  AppExploreRoute: AppExploreRoute,
+  AppFavoritesRoute: AppFavoritesRoute,
+  AppHistoricalReconstructionRoute: AppHistoricalReconstructionRoute,
+  AppHomeRoute: AppHomeRoute,
+  AppMonumentsRoute: AppMonumentsRouteWithChildren,
+  AppProfileRoute: AppProfileRoute,
+  AppRecentActivityRoute: AppRecentActivityRoute,
+  AppSavedCollectionsRoute: AppSavedCollectionsRoute,
+  AppScanMonumentRoute: AppScanMonumentRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppSmartTrailsRoute: AppSmartTrailsRoute,
+  AppTimelineRoute: AppTimelineRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ScanMonumentRoute: ScanMonumentRoute,
+  SplatRoute: SplatRoute,
+  R404Route: R404Route,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

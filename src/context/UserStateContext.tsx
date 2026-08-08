@@ -87,21 +87,33 @@ type UserStateContextType = {
 const UserStateContext = createContext<UserStateContextType | undefined>(undefined);
 
 export function UserStateProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<UserState>(() => {
+  // Start from the pristine default on BOTH server and client so SSR output and
+  // the first client render always match (no hydration mismatch). Persisted
+  // state is loaded after mount, client-only, where localStorage exists.
+  const [state, setState] = useState<UserState>(defaultState);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Client-only hydration of previously saved state.
+  useEffect(() => {
     try {
       const stored = localStorage.getItem("heritage_user_state");
       if (stored) {
-        return { ...defaultState, ...JSON.parse(stored) };
+        setState((prev) => ({ ...prev, ...JSON.parse(stored) }));
       }
     } catch (e) {
       console.warn("Could not parse user state from localStorage", e);
+    } finally {
+      setHydrated(true);
     }
-    return defaultState;
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // Persist state changes — but never before hydration completes, otherwise
+  // the pristine default would clobber the stored data on first load.
   useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem("heritage_user_state", JSON.stringify(state));
-  }, [state]);
+  }, [hydrated, state]);
 
   const addActivity = (title: string, action: string) => {
     const newActivity: Activity = {

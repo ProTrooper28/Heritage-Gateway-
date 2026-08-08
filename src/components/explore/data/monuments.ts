@@ -31,6 +31,27 @@ export interface Monument {
   nearbyAttractions: string[];
 }
 
+/**
+ * slugify — converts a monument name into a URL-safe slug ("Red Fort" → "red-fort").
+ * Used for /monuments/:id routes.
+ */
+export function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * findMonumentByParam — resolves a route param that may be either a raw
+ * monument id (e.g. "m-1") or a name slug (e.g. "red-fort").
+ */
+export function findMonumentByParam(param: string): Monument | undefined {
+  const slug = param.toLowerCase().trim();
+  return monuments.find((m) => m.id === slug || slugify(m.name) === slug);
+}
+
 export const monuments: Monument[] = [
   {
     id: "m-1",

@@ -1,52 +1,25 @@
 import { useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { Outlet, useLocation } from "@tanstack/react-router";
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
-import { HomePage } from "./HomePage";
-import { AIHistorian } from "./AIHistorian";
-import { ScanMonumentFeaturePage } from "@/features/scan-monument";
-import { SmartTrailsFeaturePage } from "@/features/smart-trails";
-import { HistoricalReconstructionFeaturePage } from "@/features/historical-reconstruction";
-import { TimelineExplorer } from "./TimelineExplorer";
-import { ExploreHeritagePage } from "../explore/ExploreHeritagePage";
-import { SavedCollectionsPage } from "./SavedCollectionsPage";
-import { FavoritesPage } from "./FavoritesPage";
-import { RecentActivityPage } from "./RecentActivityPage";
-import { ProfilePage } from "./ProfilePage";
-import { SettingsPage } from "./SettingsPage";
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /**
- * DashboardShell — the main app layout after the cinematic intro.
- * Composes sidebar + topbar + scrollable content area.
- * activeItem is lifted here so sidebar and HomePage stay in sync.
+ * DashboardShell — the app-wide layout for the signed-in experience.
+ * Composes sidebar + topbar + a scrollable content area, with a subtle
+ * route-change transition rendered around <Outlet />.
  *
- * selectedMonument — optional monument context forwarded to AI Historian.
- * When the user browses a specific monument in other feature panels, that
- * panel can call setSelectedMonument() to give AI Historian automatic context.
+ * With real routing, each page is a route; the shell only provides chrome.
  */
 export function DashboardShell() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState("Home");
-  const [selectedMonument, setSelectedMonument] = useState<string | undefined>(undefined);
-  const { scrollY } = useScroll();
-
+  const { pathname } = useLocation();
   const sidebarWidth = sidebarCollapsed ? "4.25rem" : "15rem";
 
-  // Top bar appears only after the hero scrolls away.
-  // For AI Historian view we always show it (scroll-independent).
-  const isAIHistorian = activeItem === "AI Historian";
-  const topBarOpacity = useTransform(scrollY, [400, 700], [isAIHistorian ? 1 : 0, 1]);
-  const topBarY = useTransform(scrollY, [400, 700], [isAIHistorian ? 0 : -20, 0]);
-  const topBarPointer = useTransform(scrollY, (y) =>
-    isAIHistorian || y > 500 ? "auto" : "none",
-  );
-
   return (
-    <motion.div
-      key="dashboard"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+    <div
       style={{
         minHeight: "100vh",
         background: "oklch(0.13 0.008 60)",
@@ -70,28 +43,19 @@ export function DashboardShell() {
       <AppSidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((c) => !c)}
-        activeItem={activeItem}
-        onNavigate={setActiveItem}
       />
 
-      {/* Top bar (Sticky after hero; always visible in AI Historian view) */}
-      <motion.div
-        style={{
-          opacity: topBarOpacity,
-          y: topBarY,
-          pointerEvents: topBarPointer as any,
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 40,
-        }}
-      >
-        <TopBar sidebarCollapsed={sidebarCollapsed} onNavigate={setActiveItem} />
-      </motion.div>
+      {/* Top bar */}
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 40 }}>
+        <TopBar sidebarCollapsed={sidebarCollapsed} />
+      </div>
 
       {/* Main content */}
       <motion.main
+        key={pathname}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: EASE }}
         style={{
           position: "relative",
           zIndex: 1,
@@ -99,57 +63,13 @@ export function DashboardShell() {
           marginRight: "1rem",
           paddingLeft: "1.5rem",
           paddingRight: "1.5rem",
+          paddingTop: "4.75rem",
           minHeight: "100vh",
           transition: "margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-<AnimatePresence mode="wait">
-  {isAIHistorian ? (
-    <AIHistorian
-      monumentContext={selectedMonument}
-      onClearMonumentContext={() => setSelectedMonument(undefined)}
-    />
-  ) : activeItem === "Scan Monument" ? (
-    <ScanMonumentFeaturePage />
-  ) : activeItem === "Timeline Explorer" ? (
-    <TimelineExplorer
-      key="timeline-explorer"
-      onNavigate={setActiveItem}
-    />
-  ) : activeItem === "Historical Reconstruction" ? (
-    <HistoricalReconstructionFeaturePage key="historical-reconstruction" />
-  ) : activeItem === "Smart Heritage Trails" ? (
-    <SmartTrailsFeaturePage key="smart-trails" onNavigate={setActiveItem} />
-  ) : activeItem === "Explore Heritage" ? (
-    <ExploreHeritagePage key="explore-heritage" />
-  ) : activeItem === "Saved Collections" ? (
-    <SavedCollectionsPage
-      key="saved-collections"
-      onOpenMonument={(id) => {
-        // Currently opens explore tab, full implementation would load the specific monument
-        setActiveItem("Explore Heritage");
-      }}
-      onOpenTrail={() => setActiveItem("Smart Heritage Trails")}
-    />
-  ) : activeItem === "Favorites" ? (
-    <FavoritesPage key="favorites" onOpenMonument={(id) => {
-      setActiveItem("Explore Heritage");
-    }} />
-  ) : activeItem === "Recent Activity" ? (
-    <RecentActivityPage key="recent-activity" />
-  ) : activeItem === "Profile" ? (
-    <ProfilePage key="profile" />
-  ) : activeItem === "Settings" ? (
-    <SettingsPage key="settings" />
-  ) : (
-    <HomePage
-      key="home-page"
-      activeItem={activeItem}
-      onNavigate={setActiveItem}
-    />
-  )}
-</AnimatePresence>
+        <Outlet />
       </motion.main>
-    </motion.div>
+    </div>
   );
 }

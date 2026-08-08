@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "@tanstack/react-router";
 import { Sparkles, RefreshCw, MapPin, Sun } from "lucide-react";
 
 import type { DiscoverSection, SmartTrail, TrailQuery } from "../types";
@@ -39,7 +40,8 @@ const EMPTY_SELECTION: PlannerSelection = {
   interests: [],
 };
 
-export function SmartTrailsPage({ onNavigate }: { onNavigate?: (label: string) => void }) {
+export function SmartTrailsPage() {
+  const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>("idle");
   const [selection, setSelection] = useState<PlannerSelection>(EMPTY_SELECTION);
   const [trail, setTrail] = useState<SmartTrail | null>(null);
@@ -153,7 +155,7 @@ export function SmartTrailsPage({ onNavigate }: { onNavigate?: (label: string) =
             <TrailResult
               trail={trail}
               discover={discover}
-              onExplore={() => onNavigate?.("Explore Heritage")}
+              onExplore={() => navigate({ to: "/explore" })}
               onPlanAnother={reset}
             />
           </motion.div>

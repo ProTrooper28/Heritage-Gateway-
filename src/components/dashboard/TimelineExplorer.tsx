@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { DustParticles } from "@/components/heritage/Atmosphere";
 import { useUserState } from "@/context/UserStateContext";
+import { useNavigate } from "@tanstack/react-router";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 import brihadeeswara from "@/assets/brihadeeswara.jpg";
@@ -398,13 +399,9 @@ const CATEGORIES: Category[] = [
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-type Props = {
-  onNavigate: (label: string) => void;
-};
-
 // ─── Main Component ───────────────────────────────────────────────────────────
-export function TimelineExplorer({ onNavigate }: Props) {
+export function TimelineExplorer() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<Category>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEra, setSelectedEra] = useState<Era | null>(null);
@@ -523,7 +520,7 @@ export function TimelineExplorer({ onNavigate }: Props) {
           <EraModal
             era={selectedEra}
             onClose={() => setSelectedEra(null)}
-            onAskAI={() => { setSelectedEra(null); onNavigate("AI Historian"); }}
+            onAskAI={() => { setSelectedEra(null); navigate({ to: "/ai-historian" }); }}
           />
         )}
       </AnimatePresence>

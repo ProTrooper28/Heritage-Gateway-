@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useLocation } from "@tanstack/react-router";
 import {
   Home,
   Camera,
@@ -20,48 +21,55 @@ import {
 type NavItem = {
   icon: React.ReactNode;
   label: string;
+  to: string;
 };
 
 const NAV_MAIN: NavItem[] = [
-  { icon: <Home size={18} />, label: "Home" },
-  { icon: <Camera size={18} />, label: "Scan Monument" },
-  { icon: <Landmark size={18} />, label: "Explore Heritage" },
-  { icon: <Bot size={18} />, label: "AI Historian" },
-  { icon: <Sparkles size={18} />, label: "Smart Heritage Trails" },
-  { icon: <Clock size={18} />, label: "Timeline Explorer" },
-  { icon: <ImagePlay size={18} />, label: "Historical Reconstruction" },
+  { icon: <Home size={18} />, label: "Home", to: "/home" },
+  { icon: <Camera size={18} />, label: "Scan Monument", to: "/scan-monument" },
+  { icon: <Landmark size={18} />, label: "Explore Heritage", to: "/explore" },
+  { icon: <Bot size={18} />, label: "AI Historian", to: "/ai-historian" },
+  { icon: <Sparkles size={18} />, label: "Smart Heritage Trails", to: "/smart-trails" },
+  { icon: <Clock size={18} />, label: "Timeline Explorer", to: "/timeline" },
+  { icon: <ImagePlay size={18} />, label: "Historical Reconstruction", to: "/historical-reconstruction" },
 ];
 
 const NAV_LIBRARY: NavItem[] = [
-  { icon: <BookMarked size={18} />, label: "Saved Collections" },
-  { icon: <Heart size={18} />, label: "Favorites" },
-  { icon: <History size={18} />, label: "Recent Activity" },
+  { icon: <BookMarked size={18} />, label: "Saved Collections", to: "/saved-collections" },
+  { icon: <Heart size={18} />, label: "Favorites", to: "/favorites" },
+  { icon: <History size={18} />, label: "Recent Activity", to: "/recent-activity" },
 ];
 
 const NAV_ACCOUNT: NavItem[] = [
-  { icon: <Settings size={18} />, label: "Settings" },
-  { icon: <User size={18} />, label: "Profile" },
+  { icon: <Settings size={18} />, label: "Settings", to: "/settings" },
+  { icon: <User size={18} />, label: "Profile", to: "/profile" },
 ];
 
 type SidebarProps = {
   collapsed: boolean;
   onToggle: () => void;
-  activeItem: string;
-  onNavigate: (label: string) => void;
 };
+
+/** Returns true when the given sidebar item's route is the current page. */
+function isRouteActive(pathname: string, to: string): boolean {
+  if (pathname === to) return true;
+  // /monuments and /monuments/:id both belong to the Explore feature
+  if (to === "/explore" && (pathname === "/monuments" || pathname.startsWith("/monuments/"))) {
+    return true;
+  }
+  return false;
+}
 
 function NavGroup({
   label,
   items,
   collapsed,
-  activeItem,
-  onNavigate,
+  pathname,
 }: {
   label: string;
   items: NavItem[];
   collapsed: boolean;
-  activeItem: string;
-  onNavigate: (label: string) => void;
+  pathname: string;
 }) {
   return (
     <div className="mb-2">
@@ -88,14 +96,12 @@ function NavGroup({
           </motion.p>
         )}
       </AnimatePresence>
-      {!collapsed && <div style={{ marginTop: collapsed ? "0.75rem" : "0" }} />}
       {items.map((item) => (
         <NavItemRow
           key={item.label}
           item={item}
           collapsed={collapsed}
-          isActive={activeItem === item.label}
-          onClick={() => onNavigate(item.label)}
+          isActive={isRouteActive(pathname, item.to)}
         />
       ))}
     </div>
@@ -106,18 +112,16 @@ function NavItemRow({
   item,
   collapsed,
   isActive,
-  onClick,
 }: {
   item: NavItem;
   collapsed: boolean;
   isActive: boolean;
-  onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <button
-      onClick={onClick}
+    <Link
+      to={item.to}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       title={collapsed ? item.label : undefined}
@@ -129,7 +133,7 @@ function NavItemRow({
         padding: collapsed ? "0.65rem" : "0.65rem 1rem",
         justifyContent: collapsed ? "center" : "flex-start",
         borderRadius: "0.75rem",
-        border: "none",
+        textDecoration: "none",
         background: isActive
           ? "linear-gradient(135deg, oklch(0.79 0.11 82 / 0.18), oklch(0.79 0.11 82 / 0.06))"
           : hovered
@@ -192,11 +196,13 @@ function NavItemRow({
           </motion.span>
         )}
       </AnimatePresence>
-    </button>
+    </Link>
   );
 }
 
-export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: SidebarProps) {
+export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
+  const { pathname } = useLocation();
+
   return (
     <motion.aside
       initial={{ x: -60, opacity: 0 }}
@@ -233,6 +239,7 @@ export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: Side
           borderBottom: "1px solid oklch(0.79 0.11 82 / 0.1)",
           minHeight: "4rem",
           flexShrink: 0,
+          gap: "0.5rem",
         }}
       >
         <AnimatePresence>
@@ -243,21 +250,28 @@ export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: Side
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
+              style={{ minWidth: 0 }}
             >
-              <span
-                style={{
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  fontSize: "1.05rem",
-                  fontStyle: "italic",
-                  letterSpacing: "0.04em",
-                  color: "oklch(0.96 0.012 85 / 0.9)",
-                }}
+              <Link
+                to="/home"
+                style={{ textDecoration: "none" }}
+                title="Heritage Gateway — Home"
               >
-                Heritage{" "}
-                <span style={{ color: "oklch(0.79 0.11 82)", fontStyle: "normal" }}>
-                  Gateway
+                <span
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: "1.05rem",
+                    fontStyle: "italic",
+                    letterSpacing: "0.04em",
+                    color: "oklch(0.96 0.012 85 / 0.9)",
+                  }}
+                >
+                  Heritage{" "}
+                  <span style={{ color: "oklch(0.79 0.11 82)", fontStyle: "normal" }}>
+                    Gateway
+                  </span>
                 </span>
-              </span>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
@@ -299,8 +313,7 @@ export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: Side
           label="Navigation"
           items={NAV_MAIN}
           collapsed={collapsed}
-          activeItem={activeItem}
-          onNavigate={onNavigate}
+          pathname={pathname}
         />
         <div
           style={{
@@ -313,8 +326,7 @@ export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: Side
           label="Library"
           items={NAV_LIBRARY}
           collapsed={collapsed}
-          activeItem={activeItem}
-          onNavigate={onNavigate}
+          pathname={pathname}
         />
         <div
           style={{
@@ -327,8 +339,7 @@ export function AppSidebar({ collapsed, onToggle, activeItem, onNavigate }: Side
           label="Account"
           items={NAV_ACCOUNT}
           collapsed={collapsed}
-          activeItem={activeItem}
-          onNavigate={onNavigate}
+          pathname={pathname}
         />
       </div>
     </motion.aside>
