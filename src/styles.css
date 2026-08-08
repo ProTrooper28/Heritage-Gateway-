@@ -656,3 +656,27 @@
     transparent 40%
   );
 }
+
+/* ─── Explore Heritage Utilities ──────────────────────────────────────────── */
+
+@utility explore-card {
+  background: linear-gradient(
+    150deg,
+    color-mix(in oklab, var(--parchment) 7%, transparent),
+    color-mix(in oklab, var(--ink) 74%, transparent)
+  );
+  backdrop-filter: blur(28px) saturate(110%);
+  border: 1px solid color-mix(in oklab, var(--gold) 16%, transparent);
+  box-shadow:
+    0 24px 70px -30px oklch(0 0 0 / 0.95),
+    inset 0 1px 0 color-mix(in oklab, var(--parchment) 9%, transparent);
+}
+
+@utility section-label {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: color-mix(in oklab, var(--gold) 80%, transparent);
+}
+

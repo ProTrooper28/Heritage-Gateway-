@@ -6,6 +6,7 @@ import { HomePage } from "./HomePage";
 import { AIHistorian } from "./AIHistorian";
 import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 import { TimelineExplorer } from "./TimelineExplorer";
+import { ExploreHeritagePage } from "../explore/ExploreHeritagePage";
 
 /**
  * DashboardShell — the main app layout after the cinematic intro.
@@ -108,6 +109,8 @@ export function DashboardShell() {
       key="timeline-explorer"
       onNavigate={setActiveItem}
     />
+  ) : activeItem === "Explore Heritage" ? (
+    <ExploreHeritagePage key="explore-heritage" />
   ) : (
     <HomePage
       key="home-page"
