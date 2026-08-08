@@ -9,6 +9,69 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+/**
+ * After first paint, warm the code-split route chunks in the background so the
+ * first click on any nav item is instant. Light routes are preloaded first;
+ * heavy ones (3D reconstruction, trails, scanner) are staggered so they don't
+ * compete with initial rendering. In dev this also pre-compiles the modules
+ * through Vite, removing the long first-navigation stall.
+ */
+const LIGHT_ROUTES = [
+  "/home",
+  "/monuments",
+  "/explore",
+  "/profile",
+  "/about",
+  "/login",
+  "/signup",
+  "/favorites",
+  "/recent-activity",
+  "/saved-collections",
+  "/timeline",
+  "/settings",
+  "/ai-historian",
+] as const;
+
+const HEAVY_ROUTES = [
+  "/historical-reconstruction",
+  "/smart-trails",
+  "/scan-monument",
+] as const;
+
+function preloadRoutes(
+  router: ReturnType<typeof useRouter>,
+  routes: readonly string[],
+) {
+  for (const to of routes) {
+    router.preloadRoute({ to }).catch(() => {
+      /* non-fatal: preloads are best-effort */
+    });
+  }
+}
+
+function useRouteWarmup() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Lightweight first: make the primary nav feel instant within ~200ms.
+    const lightTimer = window.setTimeout(() => {
+      preloadRoutes(router, LIGHT_ROUTES);
+    }, 350);
+
+    // Heavy chunks (Three.js / R3F) afterwards, once the UI is idle.
+    const heavyTimer = window.setTimeout(() => {
+      preloadRoutes(router, HEAVY_ROUTES);
+    }, 1400);
+
+    return () => {
+      window.clearTimeout(lightTimer);
+      window.clearTimeout(heavyTimer);
+    };
+  }, [router]);
+}
+
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { UserStateProvider } from "../context/UserStateContext";
@@ -114,6 +177,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useRouteWarmup();
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -12,4 +12,13 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    optimizeDeps: {
+      // Ensure the WebGL orb library is always pre-bundled by the dev server's
+      // dep optimizer. If it's missing from node_modules/.vite/deps (e.g. the
+      // cache was built before the package was installed), the browser 404s on
+      // /node_modules/.vite/deps/ogl.js and the login page never hydrates.
+      include: ["ogl"],
+    },
+  },
 });

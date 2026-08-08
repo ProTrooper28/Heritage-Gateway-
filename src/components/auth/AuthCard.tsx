@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { DustParticles } from "@/components/heritage/Atmosphere";
+import { useCallback, useState } from "react";
+import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
+import Orb from "@/components/ui/Orb";
 import { session } from "@/lib/session";
 
 type AuthMode = "login" | "signup";
@@ -19,6 +20,8 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [orbReady, setOrbReady] = useState(false);
+  const handleOrbReady = useCallback(() => setOrbReady(true), []);
 
   function finishAuth() {
     session.setAuthenticated();
@@ -31,15 +34,39 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ink px-6">
-      {/* Ambient gold glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,oklch(0.79_0.11_82/0.06),transparent_70%)]" />
-      <DustParticles />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-6">
+      {/* CSS aurora — always animated, zero WebGL required (guarantees the page
+          never sits on a black screen while the orb warms up or is unavailable) */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="float-a absolute left-[6%] top-[-14%] h-[50vmax] w-[50vmax] rounded-full bg-[radial-gradient(circle,oklch(0.79_0.11_82/0.06),transparent_65%)] blur-2xl" />
+        <div className="float-b absolute bottom-[-16%] right-[-6%] h-[44vmax] w-[44vmax] rounded-full bg-[radial-gradient(circle,oklch(0.68_0.08_78/0.05),transparent_65%)] blur-2xl" />
+        <LightRays />
+        <DustParticles />
+      </div>
+
+      {/* WebGL Orb — fades in on top once its first frame has rendered */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: orbReady ? 1 : 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="pointer-events-none absolute inset-0"
+      >
+        <Orb
+          hue={45}
+          hoverIntensity={0.35}
+          rotateOnHover
+          backgroundColor="#000000"
+          onReady={handleOrbReady}
+        />
+      </motion.div>
+
+      {/* Soft veil — keeps the glass card readable while letting the orb glow through */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_42%,transparent_50%,rgba(0,0,0,0.5))]" />
 
       <motion.div
-        initial={{ opacity: 0, y: 32, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         className="login-card relative w-[min(26.5rem,100%)] overflow-hidden px-10 py-12"
       >
         {/* Card top gold shimmer line */}
