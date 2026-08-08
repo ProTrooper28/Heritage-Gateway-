@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
+import { TimelineExplorer } from "./TimelineExplorer";
 
 /**
  * DashboardShell — the main app layout after the cinematic intro.
@@ -83,7 +84,13 @@ export function DashboardShell() {
           transition: "margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-        <HomePage activeItem={activeItem} onNavigate={setActiveItem} />
+        <AnimatePresence mode="wait">
+          {activeItem === "Timeline Explorer" ? (
+            <TimelineExplorer key="timeline-explorer" onNavigate={setActiveItem} />
+          ) : (
+            <HomePage key="home-page" activeItem={activeItem} onNavigate={setActiveItem} />
+          )}
+        </AnimatePresence>
       </motion.main>
     </motion.div>
   );
