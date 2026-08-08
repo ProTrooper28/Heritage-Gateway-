@@ -11,20 +11,20 @@ import konark from "@/assets/konark.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Indian Heritage AI — Experience History Like Never Before" },
+      { title: "Heritage Gateway — Experience India's History Like Never Before" },
       {
         name: "description",
         content:
-          "A cinematic journey through India's iconic monuments — Brihadeeswara, Taj Mahal, Hampi, Qutub Minar and Konark — reimagined with Indian Heritage AI.",
+          "A cinematic journey through India's iconic monuments, brought together in Heritage Gateway.",
       },
       {
         property: "og:title",
-        content: "Indian Heritage AI — Experience History Like Never Before",
+        content: "Heritage Gateway — Experience India's History Like Never Before",
       },
       {
         property: "og:description",
         content:
-          "A cinematic journey through India's iconic monuments, reimagined with Indian Heritage AI.",
+          "A cinematic journey through India's iconic monuments, brought together in Heritage Gateway.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -199,7 +199,7 @@ function LoginScene({
             <HeritageMark />
             <div>
               <h1 className="font-serif text-[2.1rem] font-light leading-[1.05] tracking-[-0.02em] text-parchment">
-                Indian Heritage AI
+                Heritage Gateway
               </h1>
               <p className="mt-3 font-sans text-[0.74rem] leading-relaxed text-parchment/55 font-light max-w-[22rem]">
                 Explore India's timeless monuments with AI-powered historical discovery.
@@ -282,7 +282,7 @@ function LoginScene({
 
         {/* ── Footer (left panel) ── */}
         <footer className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-12 py-8 font-sans text-[0.58rem] uppercase tracking-[0.28em] text-parchment/25">
-          <span>© 2026 Indian Heritage AI</span>
+          <span>© 2026 Heritage Gateway</span>
           <span>Privacy · Terms</span>
         </footer>
       </div>

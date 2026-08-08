@@ -64,7 +64,10 @@ export function DriftWall({ onOpenLogin }: DriftWallProps) {
   );
 
   return (
-    <section className="drift-wall" aria-label="Verified Indian heritage monuments">
+    <section
+      className="drift-wall"
+      aria-label="Heritage Gateway collection of Indian heritage monuments"
+    >
       <div className="drift-wall-grid" aria-hidden="true">
         {columns.map((items, index) => (
           <DriftColumn key={index} index={index} items={items} />
@@ -75,19 +78,19 @@ export function DriftWall({ onOpenLogin }: DriftWallProps) {
       <div className="drift-wall-brand">
         <p className="drift-wall-eyebrow">A living archive of Indian memory</p>
         <h2>
-          Indian
+          Heritage
           <br />
-          <em>Heritage</em> AI
+          <em>Gateway</em>
         </h2>
         <p className="drift-wall-intro">
-          Enter a visual atlas of monuments, dynasties, and stories shaped over millennia.
+          Enter a cinematic atlas of monuments, dynasties, and stories shaped over millennia.
         </p>
         <button type="button" onClick={onOpenLogin} className="drift-wall-cta">
           Begin the journey <span aria-hidden="true">→</span>
         </button>
       </div>
       <div className="drift-wall-note">
-        Verified local collection · {heritageMonuments.length} monuments
+        AI-generated local collection · {heritageMonuments.length} monuments
       </div>
     </section>
   );
