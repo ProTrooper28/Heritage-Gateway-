@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 import { Upload, Camera as CameraIcon } from "lucide-react";
 import { useScanMonument } from "../hooks/useScanMonument";
 import { ImageUploader } from "./ImageUploader";
@@ -7,6 +8,7 @@ import { ImagePreview } from "./ImagePreview";
 import { AnalysisLoading } from "./AnalysisLoading";
 import { ResultView } from "./ResultView";
 import { ErrorView } from "./ErrorView";
+import { useUserState } from "@/context/UserStateContext";
 
 export function ScanMonumentContainer() {
   const {
@@ -22,6 +24,13 @@ export function ScanMonumentContainer() {
     triggerAnalysis,
     resetScanner,
   } = useScanMonument();
+  const { addActivity, incrementStat } = useUserState();
+
+  useEffect(() => {
+    addActivity("Scan Monument", "Opened Scan Monument");
+    incrementStat("scanCount");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="relative min-h-[calc(100vh-6rem)] pt-20 pb-16 text-left max-w-5xl mx-auto z-10 font-sans">

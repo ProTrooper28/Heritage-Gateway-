@@ -7,6 +7,11 @@ import { AIHistorian } from "./AIHistorian";
 import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 import { TimelineExplorer } from "./TimelineExplorer";
 import { ExploreHeritagePage } from "../explore/ExploreHeritagePage";
+import { SavedCollectionsPage } from "./SavedCollectionsPage";
+import { FavoritesPage } from "./FavoritesPage";
+import { RecentActivityPage } from "./RecentActivityPage";
+import { ProfilePage } from "./ProfilePage";
+import { SettingsPage } from "./SettingsPage";
 
 /**
  * DashboardShell — the main app layout after the cinematic intro.
@@ -111,6 +116,21 @@ export function DashboardShell() {
     />
   ) : activeItem === "Explore Heritage" ? (
     <ExploreHeritagePage key="explore-heritage" />
+  ) : activeItem === "Saved Collections" ? (
+    <SavedCollectionsPage key="saved-collections" onOpenMonument={(id) => {
+      // Currently opens explore tab, full implementation would load the specific monument
+      setActiveItem("Explore Heritage");
+    }} />
+  ) : activeItem === "Favorites" ? (
+    <FavoritesPage key="favorites" onOpenMonument={(id) => {
+      setActiveItem("Explore Heritage");
+    }} />
+  ) : activeItem === "Recent Activity" ? (
+    <RecentActivityPage key="recent-activity" />
+  ) : activeItem === "Profile" ? (
+    <ProfilePage key="profile" />
+  ) : activeItem === "Settings" ? (
+    <SettingsPage key="settings" />
   ) : (
     <HomePage
       key="home-page"

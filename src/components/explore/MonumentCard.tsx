@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { MapPin, Heart } from "lucide-react";
+import { useUserState } from "../../context/UserStateContext";
 import { Monument } from "./data/monuments";
 
 type Props = {
@@ -8,6 +9,9 @@ type Props = {
 };
 
 export function MonumentCard({ monument, onClick }: Props) {
+  const { state, toggleFavorite } = useUserState();
+  const isFavorite = state.favorites.includes(monument.id);
+
   return (
     <motion.div
       whileHover="hover"
@@ -25,6 +29,17 @@ export function MonumentCard({ monument, onClick }: Props) {
       {/* Dark gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent opacity-80" />
       
+      {/* Favorite Button */}
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleFavorite(monument.id);
+        }}
+        className="absolute top-4 right-4 z-10 p-2 rounded-full bg-ink/40 backdrop-blur-md border border-parchment/10 text-parchment/70 hover:bg-gold/10 hover:text-red-400 hover:border-red-400/30 transition-all"
+      >
+        <Heart size={18} className={isFavorite ? "fill-red-500 text-red-500" : ""} />
+      </button>
+
       {/* Content */}
       <div className="absolute bottom-0 inset-x-0 p-5 flex flex-col justify-end">
         <h3 className="font-serif text-2xl text-parchment mb-1 leading-tight">{monument.name}</h3>
