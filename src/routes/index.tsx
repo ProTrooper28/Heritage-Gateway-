@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
+import { DriftWall } from "@/components/heritage/DriftWall";
 import { slides } from "@/components/heritage/slides";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { session } from "@/lib/session";
 import konark from "@/assets/konark.jpg";
 
-export const Route = createFileRoute("/")(
-  {
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Indian Heritage AI — Experience History Like Never Before" },
@@ -17,7 +17,10 @@ export const Route = createFileRoute("/")(
         content:
           "A cinematic journey through India's iconic monuments — Brihadeeswara, Taj Mahal, Hampi, Qutub Minar and Konark — reimagined with Indian Heritage AI.",
       },
-      { property: "og:title", content: "Indian Heritage AI — Experience History Like Never Before" },
+      {
+        property: "og:title",
+        content: "Indian Heritage AI — Experience History Like Never Before",
+      },
       {
         property: "og:description",
         content:
@@ -60,7 +63,6 @@ function useParallax() {
 function Experience() {
   // Always start with "slides" on SSR/initial render (safe for Node.js).
   const [appState, setAppState] = useState<AppState>("slides");
-  const [step, setStep] = useState(0);
   const parallax = useParallax();
 
   // Client-only session check
@@ -68,39 +70,15 @@ function Experience() {
     if (session.isAuthenticated()) {
       setAppState("dashboard");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isSlides = appState === "slides";
   const isLogin = appState === "login";
   const isDashboard = appState === "dashboard";
 
-  // Auto-advance slides
-  useEffect(() => {
-    if (!isSlides) return;
-    const t = setTimeout(() => {
-      if (step < slides.length - 1) {
-        setStep((s) => s + 1);
-      } else {
-        setAppState("login");
-      }
-    }, 10000);
-    return () => clearTimeout(t);
-  }, [step, isSlides]);
-
-  // Keyboard navigation (slides only)
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (!isSlides) return;
-      if (e.key === "ArrowRight") {
-        if (step < slides.length - 1) setStep((s) => s + 1);
-        else setAppState("login");
-      }
-      if (e.key === "ArrowLeft") setStep((s) => Math.max(s - 1, 0));
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [step, isSlides]);
+  // The wall is intentionally continuous rather than time-limited: visitors can
+  // choose when to open the preserved login card.
 
   // Called when user successfully authenticates
   function handleLogin() {
@@ -117,13 +95,9 @@ function Experience() {
     <main className="relative h-screen w-full overflow-hidden bg-ink">
       <AnimatePresence mode="wait">
         {isLogin ? (
-          <LoginScene
-            key="login"
-            parallax={parallax}
-            onLogin={handleLogin}
-          />
+          <LoginScene key="login" parallax={parallax} onLogin={handleLogin} />
         ) : (
-          <SlideScene key={`slide-${step}`} step={step} parallax={parallax} />
+          <DriftWall key="heritage-wall" onOpenLogin={() => setAppState("login")} />
         )}
       </AnimatePresence>
 
@@ -138,7 +112,6 @@ function Experience() {
           </button>
         </header>
       )}
-
     </main>
   );
 }
@@ -182,7 +155,6 @@ function SlideScene({ step, parallax }: { step: number; parallax: { x: number; y
     </motion.section>
   );
 }
-
 
 // ─── LoginScene ───────────────────────────────────────────────────────────────
 
@@ -236,9 +208,17 @@ function LoginScene({
           </div>
 
           {/* ── Email / password form ── */}
-          <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+          <form
+            className="space-y-5"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onLogin();
+            }}
+          >
             <div className="space-y-2">
-              <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans ml-1">Email</label>
+              <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans ml-1">
+                Email
+              </label>
               <input
                 type="email"
                 placeholder="scholar@heritage.ai"
@@ -249,21 +229,20 @@ function LoginScene({
 
             <div className="space-y-2 pb-1">
               <div className="flex justify-between items-center ml-1">
-                <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans">Password</label>
-                <a href="#" className="text-[0.62rem] text-gold/65 hover:text-gold transition-colors duration-200 font-sans">Forgot Password?</a>
+                <label className="text-[0.62rem] uppercase tracking-[0.18em] text-parchment/50 font-sans">
+                  Password
+                </label>
+                <a
+                  href="#"
+                  className="text-[0.62rem] text-gold/65 hover:text-gold transition-colors duration-200 font-sans"
+                >
+                  Forgot Password?
+                </a>
               </div>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="heritage-input"
-                required
-              />
+              <input type="password" placeholder="••••••••" className="heritage-input" required />
             </div>
 
-            <button
-              type="submit"
-              className="heritage-btn-primary w-full"
-            >
+            <button type="submit" className="heritage-btn-primary w-full">
               <span className="heritage-btn-shine" />
               Sign In
             </button>
@@ -272,7 +251,9 @@ function LoginScene({
           {/* ── Divider ── */}
           <div className="flex items-center gap-4 my-7">
             <div className="h-px bg-parchment/10 flex-1" />
-            <span className="text-[0.6rem] uppercase tracking-[0.22em] text-parchment/35 font-sans">Or continue with</span>
+            <span className="text-[0.6rem] uppercase tracking-[0.22em] text-parchment/35 font-sans">
+              Or continue with
+            </span>
             <div className="h-px bg-parchment/10 flex-1" />
           </div>
 
