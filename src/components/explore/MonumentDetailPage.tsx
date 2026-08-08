@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Clock, MapPin, Building, Landmark, Compass, Navigation } from "lucide-react";
+import { useEffect } from "react";
+import { ArrowLeft, Clock, MapPin, Building, Landmark, Compass, Navigation, Bookmark } from "lucide-react";
+import { useUserState } from "../../context/UserStateContext";
 import { Monument } from "./data/monuments";
 import { getExtendedData } from "./data/extendedMonumentData";
 import { NearbyHeritageSection } from "./NearbyHeritageSection";
@@ -16,7 +18,15 @@ type Props = {
 
 export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props) {
   const extendedData = getExtendedData(monument.id);
-  
+  const { state, toggleSave, addActivity, incrementStat } = useUserState();
+  const isSaved = state.savedCollections.some(s => s.monumentId === monument.id);
+
+  useEffect(() => {
+    addActivity(monument.name, "Viewed Monument");
+    incrementStat("monumentsViewed");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monument.id]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -32,6 +42,19 @@ export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props
       >
         <ArrowLeft size={16} />
         <span className="font-sans text-xs uppercase tracking-widest">Back</span>
+      </button>
+
+      {/* Save button */}
+      <button
+        onClick={() => toggleSave(monument)}
+        className={`fixed top-24 right-8 z-50 flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-xl border transition-all ${
+          isSaved 
+            ? "bg-gold/20 border-gold/60 text-gold" 
+            : "bg-ink/40 border-parchment/10 text-parchment/70 hover:text-gold hover:border-gold/30"
+        }`}
+      >
+        <Bookmark size={16} className={isSaved ? "fill-gold" : ""} />
+        <span className="font-sans text-xs uppercase tracking-widest">{isSaved ? "Saved" : "Save"}</span>
       </button>
 
       {/* Hero Section */}

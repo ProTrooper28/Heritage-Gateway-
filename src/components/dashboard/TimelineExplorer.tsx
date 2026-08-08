@@ -14,6 +14,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { DustParticles } from "@/components/heritage/Atmosphere";
+import { useUserState } from "@/context/UserStateContext";
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 import brihadeeswara from "@/assets/brihadeeswara.jpg";
@@ -411,6 +412,13 @@ export function TimelineExplorer({ onNavigate }: Props) {
   const [jumpTarget, setJumpTarget] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const eraRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const { addActivity, incrementStat } = useUserState();
+
+  useEffect(() => {
+    addActivity("Timeline Explorer", "Visited Timeline Explorer");
+    incrementStat("explorationCount");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { scrollYProgress } = useScroll({ container: containerRef });
   const scaleY = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
