@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { AppSidebar } from "./AppSidebar";
 import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
+import { ScanMonumentFeaturePage } from "@/features/scan-monument";
 import { TimelineExplorer } from "./TimelineExplorer";
 
 /**
@@ -68,7 +69,7 @@ export function DashboardShell() {
           zIndex: 40,
         }}
       >
-        <TopBar sidebarCollapsed={sidebarCollapsed} />
+        <TopBar sidebarCollapsed={sidebarCollapsed} onNavigate={setActiveItem} />
       </motion.div>
 
       {/* Main content */}
@@ -84,13 +85,22 @@ export function DashboardShell() {
           transition: "margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       >
-        <AnimatePresence mode="wait">
-          {activeItem === "Timeline Explorer" ? (
-            <TimelineExplorer key="timeline-explorer" onNavigate={setActiveItem} />
-          ) : (
-            <HomePage key="home-page" activeItem={activeItem} onNavigate={setActiveItem} />
-          )}
-        </AnimatePresence>
+<AnimatePresence mode="wait">
+  {activeItem === "Scan Monument" ? (
+    <ScanMonumentFeaturePage />
+  ) : activeItem === "Timeline Explorer" ? (
+    <TimelineExplorer
+      key="timeline-explorer"
+      onNavigate={setActiveItem}
+    />
+  ) : (
+    <HomePage
+      key="home-page"
+      activeItem={activeItem}
+      onNavigate={setActiveItem}
+    />
+  )}
+</AnimatePresence>
       </motion.main>
     </motion.div>
   );
