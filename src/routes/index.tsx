@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { DriftWall } from "@/components/heritage/DriftWall";
 import { session } from "@/lib/session";
 
@@ -38,6 +38,7 @@ export const Route = createFileRoute("/")({
  */
 function Experience() {
   const navigate = useNavigate();
+  const router = useRouter();
 
   // Client-only session check
   useEffect(() => {
@@ -46,6 +47,14 @@ function Experience() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Warm the /login chunk while the user views the landing, so the very first
+  // Login click never waits on a cold download through the proxy.
+  useEffect(() => {
+    router.preloadRoute({ to: "/login" }).catch(() => {
+      /* best-effort warmup */
+    });
+  }, [router]);
 
   return (
     <main className="relative h-screen w-full overflow-hidden bg-ink">

@@ -160,6 +160,37 @@
     color: var(--parchment);
     font-family: var(--font-sans);
   }
+
+  /* Overflow safety net: decorative full-bleed animations (drift wall, orb,
+     light rays, floating glows) intentionally extend past the viewport. Clip
+     them at the root so they can never cause page-level horizontal scrolling.
+     Content-level overflow is fixed at the component, not hidden here. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  /* Remove the grey tap flash on touch devices */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Visible keyboard / accessibility focus in the gold theme */
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--gold) 65%, transparent);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+}
+
+/* Mobile forms: keep inputs at 16px so iOS Safari never auto-zooms the page
+   into a focused field (pinch-zoom-free forms). */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
 
 @utility glass-card {

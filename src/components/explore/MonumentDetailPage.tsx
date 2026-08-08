@@ -38,7 +38,7 @@ export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props
       {/* Back button */}
       <button
         onClick={onBack}
-        className="fixed top-24 left-8 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-ink/40 backdrop-blur-xl border border-parchment/10 text-parchment/70 hover:text-gold hover:border-gold/30 transition-all"
+        className="fixed top-[5.75rem] sm:top-24 left-4 sm:left-8 z-50 flex items-center gap-2 px-4 py-2.5 sm:py-2 rounded-full bg-ink/40 backdrop-blur-xl border border-parchment/10 text-parchment/70 hover:text-gold hover:border-gold/30 transition-all"
       >
         <ArrowLeft size={16} />
         <span className="font-sans text-xs uppercase tracking-widest">Back</span>
@@ -47,7 +47,7 @@ export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props
       {/* Save button */}
       <button
         onClick={() => toggleSave(monument)}
-        className={`fixed top-24 right-8 z-50 flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-xl border transition-all ${
+        className={`fixed top-[5.75rem] sm:top-24 right-4 sm:right-8 z-50 flex items-center gap-2 px-4 py-2.5 sm:py-2 rounded-full backdrop-blur-xl border transition-all ${
           isSaved 
             ? "bg-gold/20 border-gold/60 text-gold" 
             : "bg-ink/40 border-parchment/10 text-parchment/70 hover:text-gold hover:border-gold/30"
@@ -58,7 +58,7 @@ export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props
       </button>
 
       {/* Hero Section */}
-      <div className="relative h-[60vh] -mt-10 -mx-6 mb-12 rounded-b-[3rem] overflow-hidden">
+      <div className="relative h-[52vh] sm:h-[60vh] -mt-10 -mx-4 sm:-mx-6 mb-12 rounded-b-[3rem] overflow-hidden">
         <img 
           src={monument.images[0]} 
           alt={monument.name}
@@ -66,7 +66,7 @@ export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
         
-        <div className="absolute bottom-16 left-12 right-12">
+        <div className="absolute bottom-14 sm:bottom-16 left-5 right-5 sm:left-12 sm:right-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,8 +82,8 @@ export function MonumentDetailPage({ monument, onBack, onSelectMonument }: Props
                 </span>
               )}
             </div>
-            <h1 className="font-serif text-6xl text-parchment mb-4 leading-tight">{monument.name}</h1>
-            <div className="flex items-center gap-6 font-sans text-sm text-parchment/70 uppercase tracking-widest">
+            <h1 className="font-serif text-[2.6rem] sm:text-6xl text-parchment mb-4 leading-[1.05] sm:leading-tight">{monument.name}</h1>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-xs sm:text-sm text-parchment/70 uppercase tracking-widest">
               <span className="flex items-center gap-2"><MapPin size={16} className="text-gold" /> {monument.location.city}, {monument.location.state}</span>
               <span className="flex items-center gap-2"><Clock size={16} className="text-gold" /> {monument.period}</span>
             </div>

@@ -16,7 +16,7 @@ export function MonumentCard({ monument, onClick }: Props) {
     <motion.div
       whileHover="hover"
       onClick={() => onClick(monument)}
-      className="relative flex-shrink-0 w-72 h-96 rounded-2xl overflow-hidden cursor-pointer explore-card group"
+      className="relative shrink-0 w-[clamp(15rem,68vw,18rem)] h-96 rounded-2xl overflow-hidden cursor-pointer explore-card group"
     >
       <motion.img
         src={monument.images[0]}

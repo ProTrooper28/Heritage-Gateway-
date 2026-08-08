@@ -1,9 +1,16 @@
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { DustParticles, LightRays } from "@/components/heritage/Atmosphere";
-import Orb from "@/components/ui/Orb";
 import { session } from "@/lib/session";
+
+// Lazy-load the WebGL orb so the auth page's own chunk — and therefore its
+// hydration — never waits on ogl. The form appears and becomes interactive
+// first, then the orb streams in behind it. A failed chunk resolves to a no-op
+// component so it can never throw the page into an error state.
+const Orb = lazy(() =>
+  import("@/components/ui/Orb").catch(() => ({ default: () => <></> })),
+);
 
 type AuthMode = "login" | "signup";
 
@@ -29,10 +36,15 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
   // auth page mounts — by the time the user finishes typing, the click lands
   // on an already-loaded page, so navigation feels instant.
   useEffect(() => {
+    // Warm the post-login destination and the sibling auth route so both the
+    // next click and the mode-switch link land instantly.
     router.preloadRoute({ to: "/home" }).catch(() => {
       /* best-effort warmup */
     });
-  }, [router]);
+    router.preloadRoute({ to: isLogin ? "/signup" : "/login" }).catch(() => {
+      /* best-effort warmup */
+    });
+  }, [router, isLogin]);
 
   function finishAuth() {
     session.setAuthenticated();
@@ -63,23 +75,24 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="pointer-events-none absolute inset-0"
       >
-        <Orb
-          hue={45}
-          hoverIntensity={0.35}
-          rotateOnHover
-          backgroundColor="#000000"
-          onReady={handleOrbReady}
-        />
+        <Suspense fallback={null}>
+          <Orb
+            hue={45}
+            hoverIntensity={0.35}
+            rotateOnHover
+            backgroundColor="#000000"
+            onReady={handleOrbReady}
+          />
+        </Suspense>
       </motion.div>
 
       {/* Soft veil — keeps the glass card readable while letting the orb glow through */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_70%_at_50%_42%,transparent_50%,rgba(0,0,0,0.5))]" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="login-card relative w-[min(26.5rem,100%)] overflow-hidden px-10 py-12"
+      {/* Card — visible the instant the HTML renders: the `reveal` entrance is
+          pure CSS, so the form never waits on JS download/hydration. */}
+      <div
+        className="login-card reveal relative w-[min(26.5rem,100%)] overflow-hidden px-6 py-10 sm:px-10 sm:py-12"
       >
         {/* Card top gold shimmer line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.5)] to-transparent" />
@@ -235,10 +248,10 @@ export function AuthCard({ mode }: { mode: AuthMode }) {
 
         {/* Card bottom gold shimmer line */}
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.79_0.11_82/0.2)] to-transparent" />
-      </motion.div>
+      </div>
 
       {/* Footer */}
-      <footer className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-8 py-7 font-sans text-[0.58rem] uppercase tracking-[0.28em] text-parchment/25">
+      <footer className="absolute inset-x-0 bottom-0 z-30 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 px-5 py-6 sm:justify-between sm:px-8 sm:py-7 font-sans text-[0.58rem] uppercase tracking-[0.28em] text-parchment/25">
         <span>© 2026 Heritage Gateway</span>
         <span>Privacy · Terms</span>
       </footer>

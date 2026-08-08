@@ -105,7 +105,7 @@ export function ExploreHomeView({ onSelectMonument }: Props) {
             />
           </div>
           
-          <div className="flex flex-wrap gap-6 justify-center">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] justify-items-center gap-6">
             {searchQuery && displayedMonuments.length === 0 && (
               <p className="text-parchment/50 font-sans mt-8">No monuments found matching "{searchQuery}"</p>
             )}
@@ -145,7 +145,7 @@ export function ExploreHomeView({ onSelectMonument }: Props) {
       
       return (
         <div className="space-y-8">
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-4 justify-center">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-4 justify-start sm:justify-center">
             {categories.map(cat => (
               <button
                 key={cat}
@@ -161,7 +161,7 @@ export function ExploreHomeView({ onSelectMonument }: Props) {
             ))}
           </div>
           
-          <div className="flex flex-wrap gap-6 justify-center">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] justify-items-center gap-6">
             {displayedMonuments.map(m => (
               <MonumentCard key={m.id} monument={m} onClick={onSelectMonument} />
             ))}

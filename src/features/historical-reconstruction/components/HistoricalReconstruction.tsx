@@ -189,9 +189,9 @@ export function HistoricalReconstruction() {
       {/* ─── 3D Viewer hero ─────────────────────────────────────────────── */}
       <div
         ref={panelRef}
-        className="relative rounded-[2rem] overflow-hidden"
+        className="relative rounded-[2rem] overflow-hidden h-[clamp(20rem,54vh,46rem)] md:h-[clamp(30rem,68vh,46rem)]"
         style={{
-          height: isFullscreen ? "100vh" : "clamp(30rem, 68vh, 46rem)",
+          height: isFullscreen ? "100vh" : undefined,
           border: "1px solid oklch(0.79 0.11 82 / 0.22)",
           boxShadow: "0 32px 90px -30px oklch(0 0 0 / 0.95)",
           background: "radial-gradient(ellipse at 50% 35%, oklch(0.24 0.02 60 / 0.9), oklch(0.1 0.006 60 / 1))",
@@ -234,7 +234,7 @@ export function HistoricalReconstruction() {
             {period.year} · {period.label}
           </span>
           {!monument.model.available && (
-            <span className="px-3.5 py-2 rounded-full font-sans text-[0.58rem] uppercase tracking-[0.2em]"
+            <span className="hidden sm:block px-3.5 py-2 rounded-full font-sans text-[0.58rem] uppercase tracking-[0.2em]"
               style={{
                 background: "oklch(0.08 0.005 60 / 0.75)",
                 backdropFilter: "blur(10px)",
@@ -266,8 +266,9 @@ export function HistoricalReconstruction() {
             border: "1px solid oklch(0.96 0.012 85 / 0.1)",
           }}
         >
-          <span className="font-sans text-[0.55rem] uppercase tracking-[0.24em] text-parchment/45">
-            Drag to rotate · Scroll to zoom · Tap a marker
+          <span className="font-sans text-[0.5rem] sm:text-[0.55rem] uppercase tracking-[0.2em] text-parchment/45">
+            Drag to rotate · Tap a marker
+            <span className="hidden sm:inline"> · Scroll to zoom</span>
           </span>
         </div>
       </div>

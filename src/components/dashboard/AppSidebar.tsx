@@ -18,13 +18,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-type NavItem = {
+export type NavItem = {
   icon: React.ReactNode;
   label: string;
   to: string;
 };
 
-const NAV_MAIN: NavItem[] = [
+export const NAV_MAIN: NavItem[] = [
   { icon: <Home size={18} />, label: "Home", to: "/home" },
   { icon: <Camera size={18} />, label: "Scan Monument", to: "/scan-monument" },
   { icon: <Landmark size={18} />, label: "Explore Heritage", to: "/explore" },
@@ -34,13 +34,13 @@ const NAV_MAIN: NavItem[] = [
   { icon: <ImagePlay size={18} />, label: "Historical Reconstruction", to: "/historical-reconstruction" },
 ];
 
-const NAV_LIBRARY: NavItem[] = [
+export const NAV_LIBRARY: NavItem[] = [
   { icon: <BookMarked size={18} />, label: "Saved Collections", to: "/saved-collections" },
   { icon: <Heart size={18} />, label: "Favorites", to: "/favorites" },
   { icon: <History size={18} />, label: "Recent Activity", to: "/recent-activity" },
 ];
 
-const NAV_ACCOUNT: NavItem[] = [
+export const NAV_ACCOUNT: NavItem[] = [
   { icon: <Settings size={18} />, label: "Settings", to: "/settings" },
   { icon: <User size={18} />, label: "Profile", to: "/profile" },
 ];
@@ -51,7 +51,7 @@ type SidebarProps = {
 };
 
 /** Returns true when the given sidebar item's route is the current page. */
-function isRouteActive(pathname: string, to: string): boolean {
+export function isRouteActive(pathname: string, to: string): boolean {
   if (pathname === to) return true;
   // /monuments and /monuments/:id both belong to the Explore feature
   if (to === "/explore" && (pathname === "/monuments" || pathname.startsWith("/monuments/"))) {
@@ -208,14 +208,13 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       initial={{ x: -60, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="hidden md:flex flex-col"
       style={{
         position: "fixed",
         left: "1rem",
         top: "1rem",
         bottom: "1rem",
         zIndex: 50,
-        display: "flex",
-        flexDirection: "column",
         borderRadius: "1.25rem",
         overflow: "hidden",
         transition: "width 0.35s cubic-bezier(0.22, 1, 0.36, 1)",
