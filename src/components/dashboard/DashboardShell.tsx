@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Outlet, useLocation } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import { AppSidebar } from "./AppSidebar";
 import { MobileNav } from "./MobileNav";
 import { TopBar } from "./TopBar";
-
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /**
  * DashboardShell — the app-wide layout for the signed-in experience.
@@ -15,10 +12,16 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
  *  - Mobile (<md): sidebar and desktop top bar are hidden; a compact mobile
  *    header with a hamburger navigation drawer (MobileNav) takes over, and the
  *    content runs full-width. No `md:`-hidden wrapper means no hydration flash.
+ *
+ * The content area is intentionally a plain <main>: it is NOT a motion
+ * component keyed by pathname. Remounting a framer-motion element on every
+ * navigation hit a known framer-motion 13 / React 19 mount bug that threw
+ * "Cannot read properties of undefined (reading 'mount')" on the deployed
+ * site; it also forced a full remount of the content tree per route change.
+ * Route transitions are now instant and crash-free.
  */
 export function DashboardShell() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { pathname } = useLocation();
 
   return (
     <div
@@ -52,12 +55,8 @@ export function DashboardShell() {
       {/* Mobile header + navigation drawer */}
       <MobileNav />
 
-      {/* Main content */}
-      <motion.main
-        key={pathname}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: EASE }}
+      {/* Main content — plain element: never remounted per navigation */}
+      <main
         className={
           sidebarCollapsed
             ? "md:ml-[6.25rem] md:mr-4 px-4 pt-[5.5rem] md:px-6 md:pt-[4.75rem]"
@@ -71,7 +70,7 @@ export function DashboardShell() {
         }}
       >
         <Outlet />
-      </motion.main>
+      </main>
     </div>
   );
 }
