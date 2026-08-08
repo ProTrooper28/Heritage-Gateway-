@@ -10,6 +10,17 @@ export type SavedCollection = {
   dateSaved: string; // ISO string
 };
 
+export type SavedTrail = {
+  trailId: string;
+  name: string;
+  city: string;
+  state: string;
+  image: string;
+  stops: number;
+  durationMinutes: number;
+  dateSaved: string; // ISO string
+};
+
 export type Activity = {
   id: string;
   title: string;
@@ -24,7 +35,9 @@ export type Settings = {
 
 type UserState = {
   savedCollections: SavedCollection[];
+  savedTrails: SavedTrail[];
   favorites: string[]; // Monument IDs
+  favoriteTrails: string[]; // Trail IDs
   recentActivity: Activity[];
   settings: Settings;
   stats: {
@@ -41,7 +54,9 @@ const defaultSettings: Settings = {
 
 const defaultState: UserState = {
   savedCollections: [],
+  savedTrails: [],
   favorites: [],
+  favoriteTrails: [],
   recentActivity: [],
   settings: defaultSettings,
   stats: {
@@ -54,13 +69,18 @@ const defaultState: UserState = {
 type UserStateContextType = {
   state: UserState;
   toggleSave: (monument: Monument) => void;
+  toggleSaveTrail: (trail: SavedTrail) => void;
+  removeTrail: (trailId: string) => void;
   toggleFavorite: (monumentId: string) => void;
+  toggleFavoriteTrail: (trailId: string) => void;
   addActivity: (title: string, action: string) => void;
   removeActivity: (id: string) => void;
   clearActivity: () => void;
   incrementStat: (key: keyof UserState["stats"]) => void;
   updateSettings: (settings: Partial<Settings>) => void;
-  clearData: (key: "favorites" | "savedCollections" | "recentActivity") => void;
+  clearData: (
+    key: "favorites" | "favoriteTrails" | "savedCollections" | "savedTrails" | "recentActivity",
+  ) => void;
   removeSave: (monumentId: string) => void;
 };
 
@@ -108,7 +128,7 @@ export function UserStateProvider({ children }: { children: ReactNode }) {
         const newSave: SavedCollection = {
           monumentId: monument.id,
           name: monument.name,
-          image: monument.images[0],
+          image: monument.images[0] ?? "",
           location: monument.location,
           dynasty: monument.dynasty,
           dateSaved: new Date().toISOString(),
@@ -145,6 +165,41 @@ export function UserStateProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const toggleSaveTrail = (trail: SavedTrail) => {
+    setState(prev => {
+      const isSaved = prev.savedTrails.some(t => t.trailId === trail.trailId);
+      if (isSaved) {
+        return {
+          ...prev,
+          savedTrails: prev.savedTrails.filter(t => t.trailId !== trail.trailId)
+        };
+      }
+      return {
+        ...prev,
+        savedTrails: [trail, ...prev.savedTrails]
+      };
+    });
+  };
+
+  const removeTrail = (trailId: string) => {
+    setState(prev => ({
+      ...prev,
+      savedTrails: prev.savedTrails.filter(t => t.trailId !== trailId)
+    }));
+  };
+
+  const toggleFavoriteTrail = (trailId: string) => {
+    setState(prev => {
+      const isFav = prev.favoriteTrails.includes(trailId);
+      return {
+        ...prev,
+        favoriteTrails: isFav
+          ? prev.favoriteTrails.filter(id => id !== trailId)
+          : [...prev.favoriteTrails, trailId]
+      };
+    });
+  };
+
   const removeActivity = (id: string) => {
     setState(prev => ({
       ...prev,
@@ -173,7 +228,9 @@ export function UserStateProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const clearData = (key: "favorites" | "savedCollections" | "recentActivity") => {
+  const clearData = (
+    key: "favorites" | "favoriteTrails" | "savedCollections" | "savedTrails" | "recentActivity",
+  ) => {
     setState(prev => ({
       ...prev,
       [key]: []
@@ -185,7 +242,10 @@ export function UserStateProvider({ children }: { children: ReactNode }) {
       state,
       toggleSave,
       removeSave,
+      toggleSaveTrail,
+      removeTrail,
       toggleFavorite,
+      toggleFavoriteTrail,
       addActivity,
       removeActivity,
       clearActivity,

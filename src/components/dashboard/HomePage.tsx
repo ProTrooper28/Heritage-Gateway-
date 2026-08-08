@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import {
   Camera,
   Bot,
-  Layers,
+  Sparkles,
   Clock,
   ImagePlay,
   ArrowDown,
@@ -75,10 +75,10 @@ const FEATURE_CARDS = [
     desc: "Converse with a personalized guide powered by centuries of archives.",
   },
   {
-    id: "architecture-explorer",
-    label: "Architecture Explorer",
-    icon: Layers,
-    desc: "Deconstruct monuments layer by layer across dynasties.",
+    id: "smart-trails",
+    label: "Smart Heritage Trails",
+    icon: Sparkles,
+    desc: "Personal heritage journeys curated to your time and interests.",
   },
   {
     id: "timeline-explorer",
@@ -859,11 +859,11 @@ const AI_FEATURES = [
     imageAlt: "Taj Mahal — AI Historian",
   },
   {
-    icon: Layers,
-    title: "Architecture Explorer",
-    desc: "Deconstruct monuments layer by layer. Understand the engineering marvels and stylistic evolutions of past dynasties.",
+    icon: Sparkles,
+    title: "Smart Heritage Trails",
+    desc: "Tell us where, how long, and what you love — then follow a beautifully curated journey through monuments, food and hidden gems.",
     image: brihadeeswara,
-    imageAlt: "Brihadeeswara Temple — Architecture Explorer",
+    imageAlt: "Brihadeeswara Temple — Smart Heritage Trails",
   },
   {
     icon: ImagePlay,

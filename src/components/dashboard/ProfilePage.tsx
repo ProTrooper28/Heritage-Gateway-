@@ -7,7 +7,7 @@ export function ProfilePage() {
 
   // Determine a simple "member since" date based on the oldest activity, or just say "Today"
   const memberSince = state.recentActivity.length > 0 
-    ? new Date(state.recentActivity[state.recentActivity.length - 1].timestamp).toLocaleDateString()
+    ? new Date(state.recentActivity[state.recentActivity.length - 1]!.timestamp).toLocaleDateString()
     : new Date().toLocaleDateString();
 
   return (

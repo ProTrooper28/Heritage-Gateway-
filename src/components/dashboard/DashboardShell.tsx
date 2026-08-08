@@ -5,6 +5,7 @@ import { TopBar } from "./TopBar";
 import { HomePage } from "./HomePage";
 import { AIHistorian } from "./AIHistorian";
 import { ScanMonumentFeaturePage } from "@/features/scan-monument";
+import { SmartTrailsFeaturePage } from "@/features/smart-trails";
 import { TimelineExplorer } from "./TimelineExplorer";
 import { ExploreHeritagePage } from "../explore/ExploreHeritagePage";
 import { SavedCollectionsPage } from "./SavedCollectionsPage";
@@ -114,13 +115,19 @@ export function DashboardShell() {
       key="timeline-explorer"
       onNavigate={setActiveItem}
     />
+  ) : activeItem === "Smart Heritage Trails" ? (
+    <SmartTrailsFeaturePage key="smart-trails" onNavigate={setActiveItem} />
   ) : activeItem === "Explore Heritage" ? (
     <ExploreHeritagePage key="explore-heritage" />
   ) : activeItem === "Saved Collections" ? (
-    <SavedCollectionsPage key="saved-collections" onOpenMonument={(id) => {
-      // Currently opens explore tab, full implementation would load the specific monument
-      setActiveItem("Explore Heritage");
-    }} />
+    <SavedCollectionsPage
+      key="saved-collections"
+      onOpenMonument={(id) => {
+        // Currently opens explore tab, full implementation would load the specific monument
+        setActiveItem("Explore Heritage");
+      }}
+      onOpenTrail={() => setActiveItem("Smart Heritage Trails")}
+    />
   ) : activeItem === "Favorites" ? (
     <FavoritesPage key="favorites" onOpenMonument={(id) => {
       setActiveItem("Explore Heritage");

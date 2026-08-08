@@ -2,7 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface SpecularButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+// Omit the DOM props that framer-motion redefines with incompatible signatures
+// (style → MotionStyle, onDrag/onDragStart/onDragEnd → PanInfo handlers,
+// onAnimationStart → AnimationDefinition) so the `...props` spread stays valid.
+interface SpecularButtonProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "style" | "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart"
+> {
   size?: "sm" | "md" | "lg";
   radius?: number;
   tint?: string;

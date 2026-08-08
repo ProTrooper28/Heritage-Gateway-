@@ -5,7 +5,7 @@ import {
   Camera,
   Landmark,
   Bot,
-  Layers,
+  Sparkles,
   Clock,
   ImagePlay,
   BookMarked,
@@ -27,7 +27,7 @@ const NAV_MAIN: NavItem[] = [
   { icon: <Camera size={18} />, label: "Scan Monument" },
   { icon: <Landmark size={18} />, label: "Explore Heritage" },
   { icon: <Bot size={18} />, label: "AI Historian" },
-  { icon: <Layers size={18} />, label: "Architecture Explorer" },
+  { icon: <Sparkles size={18} />, label: "Smart Heritage Trails" },
   { icon: <Clock size={18} />, label: "Timeline Explorer" },
   { icon: <ImagePlay size={18} />, label: "Historical Reconstruction" },
 ];

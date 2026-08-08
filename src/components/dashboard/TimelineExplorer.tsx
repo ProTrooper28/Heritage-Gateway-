@@ -598,7 +598,7 @@ function TimelineHeader({
                     >
                       {era.isHighlight && <Star size={10} style={{ color: "oklch(0.79 0.11 82)", flexShrink: 0 }} fill="currentColor" />}
                       <span style={{ flex: 1 }}>{era.title}</span>
-                      <span style={{ fontSize: "0.58rem", color: "oklch(0.96 0.012 85 / 0.35)", whiteSpace: "nowrap" }}>{era.period.split("–")[0].trim()}</span>
+                      <span style={{ fontSize: "0.58rem", color: "oklch(0.96 0.012 85 / 0.35)", whiteSpace: "nowrap" }}>{era.period.split("–")[0]!.trim()}</span>
                     </button>
                   ))}
                 </motion.div>
@@ -708,7 +708,7 @@ function TimelineEraItem({
       <div style={{ gridColumn: 2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.5rem", position: "relative" }}>
         <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.5, delay: 0.2 }}
           style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "0.6rem", color: era.isHighlight ? "oklch(0.79 0.11 82)" : "oklch(0.96 0.012 85 / 0.4)", textAlign: "center", letterSpacing: "0.04em", whiteSpace: "nowrap", marginBottom: "0.25rem" }}>
-          {era.period.split("–")[0].trim()}
+          {era.period.split("–")[0]!.trim()}
         </motion.div>
         <motion.div
           initial={{ scale: 0, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.4, delay: 0.1, type: "spring", stiffness: 300 }}

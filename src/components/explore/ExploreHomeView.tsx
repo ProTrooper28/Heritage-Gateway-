@@ -120,7 +120,7 @@ export function ExploreHomeView({ onSelectMonument }: Props) {
     if (activeTab === "dynasty") {
       const byDynasty = monuments.reduce((acc, m) => {
         if (!acc[m.dynasty]) acc[m.dynasty] = [];
-        acc[m.dynasty].push(m);
+        acc[m.dynasty]!.push(m);
         return acc;
       }, {} as Record<string, Monument[]>);
 
