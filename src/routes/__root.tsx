@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -67,6 +67,7 @@ function useRouteWarmup() {
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { queryClient } from "@/lib/queryClient";
 import { UserStateProvider } from "../context/UserStateContext";
 import { PageNotFound } from "@/components/PageNotFound";
 
@@ -219,7 +220,6 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
   useRouteWarmup();
 
   return (
